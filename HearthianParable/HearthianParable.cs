@@ -66,7 +66,7 @@ public class HearthianParable : ModBehaviour {
     public override void Configure(IModConfig config) {
         if(LoadManager.GetCurrentScene() == OWScene.SolarSystem) {
             devCom = config.GetSettingsValue<bool>("Developper's commentary");
-            if(devSource != null) devSource.volume = (devCom ? 1 : 0);
+            if(devSource != null) devSource.volume = (devCom ? 1.2f : 0);
             if(!config.GetSettingsValue<bool>("Mod")) {
                 Ending("deactivated");
             }
@@ -106,13 +106,15 @@ public class HearthianParable : ModBehaviour {
             }
             player = GameObject.Find("Player_Body");
             audioSource = player.AddComponent<AudioSource>();
+            audioSource.volume = 1.2f;
             devSource = player.AddComponent<AudioSource>();
             devSource.clip = audioClips["devcom"];//TODO
-            devSource.volume = (devCom ? 1 : 0);
+            devSource.volume = (devCom ? 1.2f : 0);
             layers[0] = NewHorizons.GetPlanet("Big_Little_Planet");
             layers[1] = layers[0].transform.Find("Sector/Layer1").gameObject;
             layers[2] = layers[0].transform.Find("Sector/Layer2").gameObject;
             layers[3] = layers[0].transform.Find("Sector/Layer3").gameObject;
+            Destroy(layers[3].transform.Find("Line1").gameObject);
             triggers[0] = layers[0].transform.Find("Sector/endVolumes");
             foreach(Transform endVol in triggers[0].transform.GetComponentsInChildren<Transform>()) {
                 endVolumes[endVol.gameObject.name] = endVol;
@@ -204,14 +206,15 @@ public class HearthianParable : ModBehaviour {
                     }
                 }
             }
-            if(!holeFound) {
-                if((triggers[1].position + Vector3.right * 400 - player.transform.position).magnitude < 100) {
-                    holeFound = true;
-                    landed = true;
-                    Narration("hole");
-                } else if(planet_dist < 410 && !landed) {
+            if(!landed) {
+                if(planet_dist < 410) {
                     landed = true;
                     Narration("landing");
+                }
+            } else if(!holeFound) {
+                if((triggers[1].position + Vector3.right * 400 - player.transform.position).magnitude < 100) {
+                    holeFound = true;
+                    Narration("hole");
                 }
             } else if(!nomaiFound) {
                 if((triggers[1].position + Vector3.right * 400 - player.transform.position).magnitude < 35) {
