@@ -17,10 +17,6 @@ public class HearthianParable : ModBehaviour {
     readonly Transform[] triggers = new Transform[3];
     readonly Dictionary<string, Transform> endVolumes = [];
     GravityVolume grav;
-    const float scalingSpeed = 0.5f; // in seconds
-    float startScaling = 0f;
-    float previousSize = 1f;
-    float targetSize = 1f;
 
     GameObject player;
     AudioSource audioSource, devSource;
@@ -66,7 +62,7 @@ public class HearthianParable : ModBehaviour {
     public override void Configure(IModConfig config) {
         if(LoadManager.GetCurrentScene() == OWScene.SolarSystem) {
             devCom = config.GetSettingsValue<bool>("Developper's commentary");
-            if(devSource != null) devSource.volume = (devCom ? 1.2f : 0);
+            if(devSource != null) devSource.volume = (devCom ? 1 : 0);
             if(!config.GetSettingsValue<bool>("Mod")) {
                 Ending("deactivated");
             }
@@ -106,10 +102,9 @@ public class HearthianParable : ModBehaviour {
             }
             player = GameObject.Find("Player_Body");
             audioSource = player.AddComponent<AudioSource>();
-            audioSource.volume = 1.2f;
             devSource = player.AddComponent<AudioSource>();
             devSource.clip = audioClips["devcom"];//TODO
-            devSource.volume = (devCom ? 1.2f : 0);
+            devSource.volume = (devCom ? 1 : 0);
             layers[0] = NewHorizons.GetPlanet("Big_Little_Planet");
             layers[1] = layers[0].transform.Find("Sector/Layer1").gameObject;
             layers[2] = layers[0].transform.Find("Sector/Layer2").gameObject;
@@ -178,9 +173,6 @@ public class HearthianParable : ModBehaviour {
                 layers[1].transform.localEulerAngles += Vector3.up * 5 * Time.deltaTime;
                 layers[2].transform.localEulerAngles += Vector3.forward * 5 * Time.deltaTime;
             }
-            if(planet_dist < 2000/*mod compat thingy*/ && !player.transform.localScale.ApproxEquals(targetSize * Vector3.one)) {
-                player.transform.localScale = Vector3.one * Mathf.Lerp(previousSize, targetSize, (Time.time - startScaling) * scalingSpeed);
-            }
             if(Keyboard.current.vKey.wasPressedThisFrame) {
                 Gravity_reverse();
             }
@@ -234,12 +226,6 @@ public class HearthianParable : ModBehaviour {
             if(!reachedCore && planet_dist < 110) {
                 reachedCore = true;
                 Narration("planetCore");
-            }
-
-            if(OWInput.IsNewlyPressed(InputLibrary.toolOptionY)) {
-                previousSize = player.transform.localScale.x;
-				startScaling = Time.time;
-                targetSize *= (13 + 5 * OWInput.GetValue(InputLibrary.toolOptionY)) / 12;
             }
             if(actionsQueue.Count > 0 && Time.realtimeSinceStartup > actionsQueue[0].Item1) {
                 actionsQueue[0].Item2();
