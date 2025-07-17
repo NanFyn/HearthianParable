@@ -75,15 +75,19 @@ public class HearthianParable : ModBehaviour {
 
     public void OnCompleteSceneLoad(OWScene previousScene, OWScene newScene) {
         ModHelper.Config.SetSettingsValue("Mod", true);
-        if(newScene != OWScene.SolarSystem || audioClips.Count > 0) return;
-        AssetBundle audioBundle = AssetBundle.LoadFromFile(Path.Combine(ModHelper.Manifest.ModFolderPath, "Assets", "audiobundle"));
-        if(audioBundle != null)
-            foreach(string name in audioBundle.GetAllAssetNames()) {
-                string shortName = name.Split('/')[2].Split('.')[0];
-                audioClips[shortName] = audioBundle.LoadAsset<AudioClip>(name);
-                audioLength[shortName] = audioClips[shortName].length;
-                //ModHelper.Console.WriteLine(shortName + " (" + name + ")", MessageType.Success);
-            }
+        if(newScene != OWScene.SolarSystem) return;
+        devCom = ModHelper.Config.GetSettingsValue<bool>("Developper's commentary");
+        landed = disappointed = holeFound = holeSaw = nomaiFound = upsideDown = sawSettings = heardDev = devSpedUp = devFound = reachedCore = false;
+        if(audioClips.Count <= 0) {
+            AssetBundle audioBundle = AssetBundle.LoadFromFile(Path.Combine(ModHelper.Manifest.ModFolderPath, "Assets", "audiobundle"));
+            if(audioBundle != null)
+                foreach(string name in audioBundle.GetAllAssetNames()) {
+                    string shortName = name.Split('/')[2].Split('.')[0];
+                    audioClips[shortName] = audioBundle.LoadAsset<AudioClip>(name);
+                    audioLength[shortName] = audioClips[shortName].length;
+                    //ModHelper.Console.WriteLine(shortName + " (" + name + ")", MessageType.Success);
+                }
+        }
         SubmitActionLoadScene actionLoadScene = GameObject.Find("PauseMenuBlock").transform.Find("PauseMenuItems/PauseMenuItemsLayout/Button-ExitToMainMenu").GetComponent<SubmitActionLoadScene>();
         actionLoadScene.OnSubmitAction -= SaveState;
         actionLoadScene.OnSubmitAction += SaveState;
@@ -107,6 +111,7 @@ public class HearthianParable : ModBehaviour {
             devSource = player.AddComponent<AudioSource>();
             devSource.clip = audioClips["devcom"];//TODO
             devSource.volume = (devCom ? 1 : 0);
+            devSource.Play();
             layers[0] = NewHorizons.GetPlanet("Big_Little_Planet");
             layers[1] = layers[0].transform.Find("Sector/Layer1").gameObject;
             layers[2] = layers[0].transform.Find("Sector/Layer2").gameObject;
@@ -156,7 +161,6 @@ public class HearthianParable : ModBehaviour {
             foreach(MeshRenderer mr in dr) {
                 mr.material = new Material(Shader.Find("Diffuse"));
             }*/
-            devSource.Play();
         }, 61);
     }
 
