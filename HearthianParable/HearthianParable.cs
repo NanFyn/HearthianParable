@@ -180,8 +180,8 @@ public class HearthianParable : ModBehaviour {
                 if(!heardDev) heardDev = true;
                 if(devSpedUp) {
                     if(devSource.isPlaying) {
-                        if(Keyboard.current.kKey.wasReleasedThisFrame && devSource.time < (audioLength["devcom"] + audioLength["devlanding"] + audioLength["devhole"] + audioLength["devcore"]) / 4) {
-                            devSource.time = (audioLength["devcom"] + audioLength["devlanding"] + audioLength["devhole"] + audioLength["devcore"]) / 4;
+                        if(Keyboard.current.kKey.wasReleasedThisFrame && devSource.time < 80) {
+                            devSource.time = 80;
                         }
                     } else {
                         devCom = false;
@@ -189,12 +189,14 @@ public class HearthianParable : ModBehaviour {
                     }
                 } else {
                     if(!devFound && Keyboard.current.kKey.wasPressedThisFrame && devSource.isPlaying) {
-                        devSpedUp = true;
-                        float currentTime = devSource.time + (landed ? audioLength["devcom"] : 0) + (holeFound ? audioLength["devlanding"] : 0) + (reachedCore ? audioLength["devhole"] : 0);
-                        devSource.Stop();
-                        devSource.clip = audioClips["devcomfast"];
-                        devSource.Play();
-                        devSource.time = currentTime / 4;
+                        float currentTime = (devSource.time + (landed ? 33.44f : 0) + (holeFound ? 38.33f : 0) + (reachedCore ? 95.28f : 0)) / 4;
+                        if(currentTime < 78) {
+                            devSpedUp = true;
+                            devSource.Stop();
+                            devSource.clip = audioClips["devcomfast"];
+                            devSource.Play();
+                            devSource.time = currentTime;
+                        }
                     }
                 }
             }
@@ -240,126 +242,127 @@ public class HearthianParable : ModBehaviour {
             audioSource.Stop();
             actionsQueue.Clear();
         }
+        devSource.volume = (devCom ? 1 : 0);
         switch(audioId) {
-        case "landing":
-            if(!devCom) {
-                audioSource.clip = audioClips["landing"];
-                actionsQueue.Add((Time.realtimeSinceStartup + 2, () => { disappointed = true; }));
-                audioSource.Play();
-            }
-            devSource.Stop();
-            devSource.clip = audioClips["devlanding"];
-            devSource.Play();
-            break;
-        case "hole":
-            if(!devCom) {
-                if(disappointed) {
-                    audioSource.clip = audioClips["holea"];
-                    actionsQueue.Add((Time.realtimeSinceStartup + audioLength["holea"], () => { Narration("hole2"); }));
-                } else {
-                    audioSource.clip = audioClips["hole"];
-                    actionsQueue.Add((Time.realtimeSinceStartup + audioLength["hole"], () => { Narration("hole2"); }));
+            case "landing":
+                if(!devCom) {
+                    audioSource.clip = audioClips["landing"];
+                    actionsQueue.Add((Time.realtimeSinceStartup + 2, () => { disappointed = true; }));
+                    audioSource.Play();
                 }
-                audioSource.Play();
-            }
-            devSource.Stop();
-            devSource.clip = audioClips["devhole"];
-            devSource.Play();
-            break;
-        case "hole2":
-            audioSource.clip = audioClips["hole2"];
-            actionsQueue.Add((Time.realtimeSinceStartup + 2.6f, () => { holeSaw = true; }));
-            audioSource.Play();
-            if(disappointed) actionsQueue.Add((Time.realtimeSinceStartup + audioLength["hole2"], () => { Narration("hole2A"); }));
-            break;
-        case "hole2A":
-            audioSource.clip = audioClips["hole2a"];
-            audioSource.Play();
-            break;
-        case "settings":
-            if(nomaiFound) audioSource.clip = audioClips["settingsa"];
-            else {
-                audioSource.clip = audioClips["settings"];
-                actionsQueue.Add((Time.realtimeSinceStartup + audioLength["settings"], () => { Narration("settings2"); }));
-            }
-            audioSource.Play();
-            break;
-        case "settings2":
-            if(holeSaw) {
-                audioSource.clip = audioClips["settings2a"];
-                actionsQueue.Add((Time.realtimeSinceStartup + audioLength["settings2a"], () => { Narration("settings3"); }));
-            } else {
-                audioSource.clip = audioClips["settings2"];
-                actionsQueue.Add((Time.realtimeSinceStartup + audioLength["settings2"], () => { Narration("settings3"); }));
-            }
-            audioSource.Play();
-            break;
-        case "settings3":
-            audioSource.clip = audioClips["settings3"];
-            audioSource.Play();
-            break;
-        case "nomaiFloors":
-            nomaiFound = true;
-            if(!devCom) {
-                if(holeSaw) audioSource.clip = audioClips["nomaia"];
-                else audioSource.clip = audioClips["nomai"];
-                audioSource.Play();
-            }
-            break;
-        case "innerSide":
-            if(!devCom) {
-                audioSource.clip = audioClips["innerside"];
-                actionsQueue.Add((Time.realtimeSinceStartup + audioLength["innerside"], () => { Narration("innerSide2"); }));
-                audioSource.Play();
-            }
-            break;
-        case "innerSide2":
-            if(sawSettings) audioSource.clip = audioClips["innerside2a"];
-            else audioSource.clip = audioClips["innerside2"];
-            audioSource.Play();
-            break;
-        case "planetCore":
-            audioSource.clip = audioClips["core"];
-            actionsQueue.Add((Time.realtimeSinceStartup + audioLength["core"], () => { Narration("planetCore2"); }));
-            audioSource.Play();
-            break;
-        case "planetCore2":
-            if(heardDev) {
-                if(devCom) {
-                    audioSource.clip = audioClips["core1"];
-                    actionsQueue.Add((Time.realtimeSinceStartup + audioLength["core1"], () => { Narration("devCore"); }));
-                } else {
-                    audioSource.clip = audioClips["core2"];
-                    devSource.Stop();
-                    devSource.clip = audioClips["devcore"];
-                    devSource.Play();
-                }
-            } else {
-                audioSource.clip = audioClips["core3"];
-                actionsQueue.Add((Time.realtimeSinceStartup + audioLength["core3"], () => { Ending("cheater"); }));
-            }
-            audioSource.Play();
-            break;
-        case "devCore":
-            devSource.Stop();
-            devSource.clip = audioClips["devcore"];
-            devSource.Play();
-            break;
-        case "devFound":
-            if(devCom) {
                 devSource.Stop();
-                devSource.clip = audioClips["devdead"];
+                devSource.clip = audioClips["devlanding"];
                 devSource.Play();
-                actionsQueue.Add((Time.realtimeSinceStartup + audioLength["devdead"], () => { Ending("ernestoDev"); }));
-            } else {
-                audioSource.clip = audioClips["devfound"];
-                actionsQueue.Add((Time.realtimeSinceStartup + audioLength["devfound"], () => { Ending("ernesto"); }));
+                break;
+            case "hole":
+                if(!devCom) {
+                    if(disappointed) {
+                        audioSource.clip = audioClips["holea"];
+                        actionsQueue.Add((Time.realtimeSinceStartup + audioLength["holea"], () => { Narration("hole2"); }));
+                    } else {
+                        audioSource.clip = audioClips["hole"];
+                        actionsQueue.Add((Time.realtimeSinceStartup + audioLength["hole"], () => { Narration("hole2"); }));
+                    }
+                    audioSource.Play();
+                }
+                devSource.Stop();
+                devSource.clip = audioClips["devhole"];
+                devSource.Play();
+                break;
+            case "hole2":
+                audioSource.clip = audioClips["hole2"];
+                actionsQueue.Add((Time.realtimeSinceStartup + 2.6f, () => { holeSaw = true; }));
                 audioSource.Play();
+                if(disappointed) actionsQueue.Add((Time.realtimeSinceStartup + audioLength["hole2"], () => { Narration("hole2A"); }));
+                break;
+            case "hole2A":
+                audioSource.clip = audioClips["hole2a"];
+                audioSource.Play();
+                break;
+            case "settings":
+                if(nomaiFound) audioSource.clip = audioClips["settingsa"];
+                else {
+                    audioSource.clip = audioClips["settings"];
+                    actionsQueue.Add((Time.realtimeSinceStartup + audioLength["settings"], () => { Narration("settings2"); }));
+                }
+                audioSource.Play();
+                break;
+            case "settings2":
+                if(holeSaw) {
+                    audioSource.clip = audioClips["settings2a"];
+                    actionsQueue.Add((Time.realtimeSinceStartup + audioLength["settings2a"], () => { Narration("settings3"); }));
+                } else {
+                    audioSource.clip = audioClips["settings2"];
+                    actionsQueue.Add((Time.realtimeSinceStartup + audioLength["settings2"], () => { Narration("settings3"); }));
+                }
+                audioSource.Play();
+                break;
+            case "settings3":
+                audioSource.clip = audioClips["settings3"];
+                audioSource.Play();
+                break;
+            case "nomaiFloors":
+                nomaiFound = true;
+                if(!devCom) {
+                    if(holeSaw) audioSource.clip = audioClips["nomaia"];
+                    else audioSource.clip = audioClips["nomai"];
+                    audioSource.Play();
+                }
+                break;
+            case "innerSide":
+                if(!devCom) {
+                    audioSource.clip = audioClips["innerside"];
+                    actionsQueue.Add((Time.realtimeSinceStartup + audioLength["innerside"], () => { Narration("innerSide2"); }));
+                    audioSource.Play();
+                }
+                break;
+            case "innerSide2":
+                if(sawSettings) audioSource.clip = audioClips["innerside2a"];
+                else audioSource.clip = audioClips["innerside2"];
+                audioSource.Play();
+                break;
+            case "planetCore":
+                audioSource.clip = audioClips["core"];
+                actionsQueue.Add((Time.realtimeSinceStartup + audioLength["core"], () => { Narration("planetCore2"); }));
+                audioSource.Play();
+                break;
+            case "planetCore2":
+                if(heardDev) {
+                    if(devCom) {
+                        audioSource.clip = audioClips["core1"];
+                        actionsQueue.Add((Time.realtimeSinceStartup + audioLength["core1"], () => { Narration("devCore"); }));
+                    } else {
+                        audioSource.clip = audioClips["core2"];
+                        devSource.Stop();
+                        devSource.clip = audioClips["devcore"];
+                        devSource.Play();
+                    }
+                } else {
+                    audioSource.clip = audioClips["core3"];
+                    actionsQueue.Add((Time.realtimeSinceStartup + audioLength["core3"], () => { Ending("cheater"); }));
+                }
+                audioSource.Play();
+                break;
+            case "devCore":
+                devSource.Stop();
+                devSource.clip = audioClips["devcore"];
+                devSource.Play();
+                break;
+            case "devFound":
+                if(devCom) {
+                    devSource.Stop();
+                    devSource.clip = audioClips["devdead"];
+                    devSource.Play();
+                    actionsQueue.Add((Time.realtimeSinceStartup + audioLength["devdead"], () => { Ending("ernestoDev"); }));
+                } else {
+                    audioSource.clip = audioClips["devfound"];
+                    actionsQueue.Add((Time.realtimeSinceStartup + audioLength["devfound"], () => { Ending("ernesto"); }));
+                    audioSource.Play();
+                }
+                break;
+            default:
+                return;
             }
-            break;
-        default:
-            return;
-        }
     }
 
     public void Gravity_reverse() {
@@ -389,6 +392,7 @@ public class HearthianParable : ModBehaviour {
         }
         SaveState();
         endVolumes[type].position = player.transform.position;
+        endVolumes[type].parent = player.transform;
     }
 }
 

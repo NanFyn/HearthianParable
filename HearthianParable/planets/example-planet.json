@@ -22,9 +22,6 @@
 			"tint": {"r":255,"g":255, "b":255}
 		}
 	],
-    "ShipLog": {
-        "spriteFolder": "planets/shiplog/sprites"
-    },
     "Props": {
         "details": [
             {
@@ -195,7 +192,8 @@
 			"rename":"kickedOut",
 			"deathType":"impact",
 			"gameOver":{
-				"creditsType":"none"
+				"length":0,
+				"creditsType":"custom"
 			}
 			}
 		]
