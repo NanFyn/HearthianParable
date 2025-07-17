@@ -46,7 +46,7 @@ public class HearthianParable : ModBehaviour {
         ModHelper.Events.Unity.RunWhen(PlayerData.IsLoaded, LoadData);
         OnCompleteSceneLoad(OWScene.TitleScreen, OWScene.TitleScreen); // We start on title screen
         LoadManager.OnCompleteSceneLoad += OnCompleteSceneLoad;
-        NewHorizons.GetStarSystemLoadedEvent().AddListener(SpawnIntoSystem);
+        //NewHorizons.GetStarSystemLoadedEvent().AddListener(SpawnIntoSystem);
     }
 
     void LoadData() {
@@ -87,10 +87,12 @@ public class HearthianParable : ModBehaviour {
         SubmitActionLoadScene actionLoadScene = GameObject.Find("PauseMenuBlock").transform.Find("PauseMenuItems/PauseMenuItemsLayout/Button-ExitToMainMenu").GetComponent<SubmitActionLoadScene>();
         actionLoadScene.OnSubmitAction -= SaveState;
         actionLoadScene.OnSubmitAction += SaveState;
+        SpawnIntoSystem();
     }
 
-    void SpawnIntoSystem(string systemName) {
-        if(systemName != "Jam5" || layers[0] != null) return;
+    void SpawnIntoSystem(string systemName = "Jam5") {
+        ModHelper.Console.WriteLine("Spawn into Why system: " + (systemName != "Jam5") + (layers[1] != null), MessageType.Success);
+        if(systemName != "Jam5" || (layers[1] != null && layers[1].GetComponent<Gravity_reverse>() != null)) return;
         ModHelper.Events.Unity.FireInNUpdates(() => {
             for(int i = 1;i < 6;i++) GameObject.Find("Vambok_THP_Platform_Body/Sector/Item" + i).SetActive((gameState & 1 << (i - 1)) > 0);
             if((gameState & 31) > 30) {
