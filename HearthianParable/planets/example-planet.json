@@ -1,0 +1,203 @@
+﻿{
+    "$schema": "https://raw.githubusercontent.com/Outer-Wilds-New-Horizons/new-horizons/main/NewHorizons/Schemas/body_schema.json",
+    "name": "Big_Little_Planet",
+    "starSystem": "Jam5",
+    "Base": {
+        "gravityFallOff": "inverseSquared",
+        "surfaceSize": 400,
+        "groundSize": 100,
+        "surfaceGravity": 12,
+		"soiOverride": 600,
+		"gravityAlignmentRadiusOverride": 500
+    },
+    "Orbit": {
+        "primaryBody": "Why_Star",
+        "semiMajorAxis": 1000
+    },
+	"AmbientLights": [
+		{
+			"position": {"x":0,"y":0, "z":0},
+			"innerRadius": 100,
+			"outerRadius": 450,
+			"tint": {"r":255,"g":255, "b":255}
+		}
+	],
+    "ShipLog": {
+        "spriteFolder": "planets/shiplog/sprites"
+    },
+    "Props": {
+        "details": [
+            {
+				"assetBundle": "Assets/bundle",
+                "path": "Assets/Bundle/Layer.prefab",
+                "scale": 4.0,
+				"rename": "Layer3",
+                "keepLoaded": true
+            },
+            {
+				"assetBundle": "Assets/bundle",
+                "path": "Assets/Bundle/Layer.prefab",
+                "scale": 3.4,
+				"rename": "Layer2",
+				"rotation": {"x":0,"y":0,"z":90},
+                "keepLoaded": true
+            },
+            {
+				"assetBundle": "Assets/bundle",
+                "path": "Assets/Bundle/Layer.prefab",
+                "scale": 2.8,
+				"rename": "Layer1",
+				"rotation": {"x":0,"y":90,"z":0},
+                "keepLoaded": true
+            },
+            {
+                "path": "WhiteholeStation_Body/Sector_WhiteholeStation/Geometry_WhiteholeStation/BatchedGroup/BatchedMeshRenderers_5",
+				"parentPath": "Sector/Layer3",
+				"rename": "rotato3",
+                "keepLoaded": true,
+				"isRelativeToParent": true
+            },
+            {
+                "path": "WhiteholeStation_Body/Sector_WhiteholeStation/Geometry_WhiteholeStation/BatchedGroup/BatchedMeshRenderers_5",
+				"position": {"x":97.85,"y":6.84,"z":-2.6},
+				"rotation": {"x":0.3,"y":180,"z":270},
+                "scale": 0.125,
+				"parentPath": "Sector/Layer3",
+				"rename": "ring3",
+                "keepLoaded": true,
+				"isRelativeToParent": true
+            },
+            {
+                "path": "WhiteholeStation_Body/Sector_WhiteholeStation/Geometry_WhiteholeStation/BatchedGroup/BatchedMeshRenderers_5",
+				"position": {"x":-0.048,"y":0,"z":0},
+				"rotation": {"x":0,"y":0,"z":30.67},
+				"parentPath": "Sector/Layer3/ring3",
+				"isRelativeToParent": true
+            },
+			{
+                "path": "WhiteholeStation_Body/Sector_WhiteholeStation/Volumes_WhiteholeStation/GravityRing",
+				"position": {"x":0,"y":0,"z":-20},
+				"rotation": {"x":270,"y":0,"z":0},
+				"parentPath": "Sector/Layer3/ring3",
+				"rename": "gravVol3",
+				"isRelativeToParent": true
+            },
+            {
+                "path": "WhiteholeStation_Body/Sector_WhiteholeStation/Geometry_WhiteholeStation/BatchedGroup/BatchedMeshRenderers_5",
+				"parentPath": "Sector/Layer2",
+				"rename": "rotato2",
+                "keepLoaded": true,
+				"isRelativeToParent": true
+            },
+            {
+                "path": "WhiteholeStation_Body/Sector_WhiteholeStation/Geometry_WhiteholeStation/BatchedGroup/BatchedMeshRenderers_5",
+				"position": {"x":97.85,"y":6.84,"z":-2.6},
+				"rotation": {"x":0.3,"y":180,"z":270},
+                "scale": 0.125,
+				"parentPath": "Sector/Layer2",
+				"rename": "ring2",
+                "keepLoaded": true,
+				"isRelativeToParent": true
+            },
+            {
+                "path": "WhiteholeStation_Body/Sector_WhiteholeStation/Geometry_WhiteholeStation/BatchedGroup/BatchedMeshRenderers_5",
+				"position": {"x":-0.048,"y":0,"z":0},
+				"rotation": {"x":0,"y":0,"z":30.67},
+				"parentPath": "Sector/Layer2/ring2",
+				"isRelativeToParent": true
+            },
+			{
+                "path": "WhiteholeStation_Body/Sector_WhiteholeStation/Volumes_WhiteholeStation/GravityRing",
+				"position": {"x":0,"y":0,"z":-20},
+				"rotation": {"x":270,"y":0,"z":0},
+				"parentPath": "Sector/Layer2/ring2",
+				"rename": "gravVol2",
+				"isRelativeToParent": true
+            },
+            {
+                "path": "WhiteholeStation_Body/Sector_WhiteholeStation/Geometry_WhiteholeStation/BatchedGroup/BatchedMeshRenderers_5",
+				"parentPath": "Sector/Layer1",
+				"rename": "rotato1",
+                "keepLoaded": true,
+				"isRelativeToParent": true
+            },
+            {
+                "path": "WhiteholeStation_Body/Sector_WhiteholeStation/Geometry_WhiteholeStation/BatchedGroup/BatchedMeshRenderers_5",
+				"position": {"x":97.85,"y":6.84,"z":-2.6},
+				"rotation": {"x":0.3,"y":180,"z":270},
+                "scale": 0.125,
+				"parentPath": "Sector/Layer1",
+				"rename": "ring1",
+                "keepLoaded": true,
+				"isRelativeToParent": true
+            },
+            {
+                "path": "WhiteholeStation_Body/Sector_WhiteholeStation/Geometry_WhiteholeStation/BatchedGroup/BatchedMeshRenderers_5",
+				"position": {"x":-0.048,"y":0,"z":0},
+				"rotation": {"x":0,"y":0,"z":30.67},
+				"parentPath": "Sector/Layer1/ring1",
+				"isRelativeToParent": true
+            },
+			{
+                "path": "WhiteholeStation_Body/Sector_WhiteholeStation/Volumes_WhiteholeStation/GravityRing",
+				"position": {"x":0,"y":0,"z":-20},
+				"rotation": {"x":270,"y":0,"z":0},
+				"parentPath": "Sector/Layer1/ring1",
+				"rename": "gravVol1",
+				"isRelativeToParent": true
+            },
+            {
+                "path": "WhiteholeStation_Body/Sector_WhiteholeStation/Geometry_WhiteholeStation/BatchedGroup/BatchedMeshRenderers_5",
+				"rename": "endVolumes"
+            }
+        ]
+    },
+	"Volumes":{
+		"creditsVolume":[
+			{
+			"parentPath":"Sector/endVolumes",
+			"radius":10,
+			"rename":"ernesto",
+			"gameOver":{
+				"text":"Out of remorse, Ernesto uploaded the mod to the database.",
+				"creditsType":"kazoo"
+			}
+			},{
+			"parentPath":"Sector/endVolumes",
+			"radius":10,
+			"rename":"ernestoDev",
+			"deathType":"digestion",
+			"gameOver":{
+				"text":"It's dangerous to go alone in the Outer Wilds!",
+				"creditsType":"kazoo"
+			}
+			},{
+			"parentPath":"Sector/endVolumes",
+			"radius":10,
+			"rename":"cheater",
+			"deathType":"crushedByElevator",
+			"gameOver":{
+				"text":"Here you are, new ending. Happy?",
+				"creditsType":"none"
+			}
+			},{
+			"parentPath":"Sector/endVolumes",
+			"radius":10,
+			"rename":"deactivated",
+			"deathType":"blackHole",
+			"gameOver":{
+				"length":6,
+				"creditsType":"custom"
+			}
+			},{
+			"parentPath":"Sector/endVolumes",
+			"radius":10,
+			"rename":"kickedOut",
+			"deathType":"impact",
+			"gameOver":{
+				"creditsType":"none"
+			}
+			}
+		]
+	}
+}

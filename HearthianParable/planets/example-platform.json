@@ -1,0 +1,71 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Outer-Wilds-New-Horizons/new-horizons/main/NewHorizons/Schemas/body_schema.json",
+  "name": "Vambok_THP_Platform",
+  "starSystem": "Jam5",
+  "extras": {
+    "isPlatform": true
+  },
+
+  "Props": {
+    "details": [
+      {
+        "rename": "Treepot",
+        "path": "DB_VesselDimension_Body/Sector_VesselDimension/Props_VesselDimension/Prefab_NOM_NomaiTree_VarDRY_3/GEO_Treepot_3",
+        "position": { "x": 0, "y": 0, "z": 60 }
+      },
+      {
+		"rename": "TreeGood",
+        "path": "WhiteholeStation_Body/Sector_WhiteholeStation/Props_WhiteHoleStation/Prefab_NOM_NomaiTree_Var_2/GEO_NomaiTree_1_Trunk",
+        "parentPath": "Sector/Treepot",
+        "isRelativeToParent": true
+      },
+	  {
+        "path": "TowerTwin_Body/Sector_TowerTwin/Sector_TimeLoopInterior/Interactables_TimeLoopInterior/WarpCoreSocket/Prefab_NOM_WarpCoreVessel/Effects_NOM_AdvancedWarpCore/Effects_NOM_WarpParticlesWhite",
+        "position": { "x": 0, "y": 2, "z": 0 },
+        "isRelativeToParent": true,
+        "scale": 15,
+        "parentPath": "Sector/Treepot/TreeGood"
+      },
+      {
+		"rename": "TreeBad",
+        "path": "Comet_Body/Prefab_NOM_Shuttle/Sector_NomaiShuttleInterior/Props_NomaiShuttleInterior/Prefab_NOM_NomaiTree_VarDRY_3/GEO_NomaiTree_3_Trunk",
+        "parentPath": "Sector/Treepot",
+        "rotation": { "x": 0, "y": 340, "z": 0 },
+        "isRelativeToParent": true
+      },
+      {
+		"rename": "Item1",
+        "path": "TimberHearth_Body/Sector_TH/Sector_Village/Sector_UpperVillage/Characters_UpperVillage/Villager_HEA_Arkose_GhostMatter/Villager_HEA_Arkose_ANIM_RockThrow",
+        "position": { "x": 6.9282, "y": 0, "z": 56 },
+        "rotation": { "x": 0, "y": 300, "z": 0 }
+      },
+      {
+		"rename": "Item2",
+        "path": "VolcanicMoon_Body/Sector_VM/Geometry_VM/Structures_VM/BatchedGroup/BatchedMeshRenderers_3",
+        "position": { "x": -0.32, "y": -68.7, "z": 50.5 },
+        "rotation": { "x": 11, "y": 300, "z": 60 },
+        "scale": 0.8334
+      },
+      {
+		"rename": "Item3",
+        "path": "TimberHearth_Body/Sector_TH/Sector_Village/Sector_Observatory/Interactables_Observatory/AnglerFishExhibit/AnglerFishTankPivot/Beast_Anglerfish",
+        "position": { "x": 0, "y": 0.6, "z": 68 },
+        "rotation": { "x": 0, "y": 180, "z": 0 },
+		"scale":0.015
+      },
+      {
+		"rename": "Item4",
+        "path": "TimberHearth_Body/Sector_TH/Sector_Village/Sector_LowerVillage/Characters_LowerVillage/Villager_HEA_Gneiss/Villager_HEA_Gneiss_ANIM_Tuning/Props_HEA_Banjo:Prop_HEA_Banjo",
+        "position": { "x": -6.9282, "y": 0.1, "z": 64 },
+        "rotation": { "x": 270, "y": 120, "z": 0 }
+      },
+      {
+		"rename": "Item5",
+        "path": "TimeLoopRing_Body/Interactibles_TimeLoopRing/Prefab_GD_WallScrollBanana_Broken",
+        "position": { "x": -6.9282, "y": 0, "z": 56 },
+        "rotation": { "x": 0, "y": 240, "z": 0 }
+      }
+
+    ]
+  }
+}

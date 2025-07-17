@@ -1,0 +1,38 @@
+﻿{
+  "$schema": "https://raw.githubusercontent.com/Outer-Wilds-New-Horizons/new-horizons/main/NewHorizons/Schemas/body_schema.json",
+  "name": "Why_Star",
+  "starSystem": "Jam5",
+  "removeChildren": [ "Sector/Star/Audio_Star/SurfaceAudio_Sun" ],
+  "Base": {
+    "gravityFallOff": "inverseSquared",
+    "surfaceSize": 400,
+    "surfaceGravity": 10,
+    "centerOfSolarSystem": true
+  },
+  "Orbit": {
+    "staticPosition": {
+      "x": 1000,
+      "y": 2000,
+      "z": 5000
+    }
+  },
+  "Star": {
+    "stellarDeathType": "none",
+    "size": 300,
+    "solarLuminosity": 1,
+    "lightTint": {
+      "r": 210,
+      "g": 200,
+      "b": 255
+    },
+    "tint": {
+      "r": 50,
+      "g": 0,
+      "b": 255
+    }
+  },
+  "ShipLog": {
+    "xmlFile": "planets/shiplog/AuthorModSystem.xml",
+    "spriteFolder": "planets/shiplog/sprites"
+  }
+}

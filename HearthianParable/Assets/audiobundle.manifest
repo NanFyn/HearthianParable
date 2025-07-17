@@ -1,0 +1,42 @@
+ManifestFileVersion: 0
+CRC: 3694082374
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 12843202d48d2c2dc82979b34bc03fcf
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 3f7d0c5e0986ec71841622bcb2f9be1c
+HashAppended: 0
+ClassTypes:
+- Class: 83
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/AudioBundle/devComFast.wav
+- Assets/AudioBundle/devCom.wav
+- Assets/AudioBundle/hole.wav
+- Assets/AudioBundle/core1.wav
+- Assets/AudioBundle/hole2A.wav
+- Assets/AudioBundle/devLanding.wav
+- Assets/AudioBundle/nomaiA.wav
+- Assets/AudioBundle/devHole.wav
+- Assets/AudioBundle/core.wav
+- Assets/AudioBundle/devDead.wav
+- Assets/AudioBundle/nomai.wav
+- Assets/AudioBundle/innerSide2A.wav
+- Assets/AudioBundle/landing.wav
+- Assets/AudioBundle/settings2.wav
+- Assets/AudioBundle/holeA.wav
+- Assets/AudioBundle/settings3.wav
+- Assets/AudioBundle/settings2A.wav
+- Assets/AudioBundle/devCore.wav
+- Assets/AudioBundle/innerSide.wav
+- Assets/AudioBundle/settings.wav
+- Assets/AudioBundle/core2.wav
+- Assets/AudioBundle/devFound.wav
+- Assets/AudioBundle/innerSide2.wav
+- Assets/AudioBundle/core3.wav
+- Assets/AudioBundle/settingsA.wav
+- Assets/AudioBundle/hole2.wav
+Dependencies: []

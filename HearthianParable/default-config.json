@@ -1,0 +1,14 @@
+{
+    "$schema": "https://raw.githubusercontent.com/ow-mods/owml/master/schemas/config_schema.json",
+    "enabled": true,
+    "settings": {
+        "Developper's commentary": {
+            "type": "toggle",
+            "value": false
+        },
+        "Mod": {
+            "type": "toggle",
+            "value": true
+        }
+    }
+}

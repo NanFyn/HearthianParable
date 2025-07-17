@@ -1,0 +1,18 @@
+<AstroObjectEntry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/Outer-Wilds-New-Horizons/new-horizons/main/NewHorizons/Schemas/shiplog_schema.xsd">
+  <ID>VAM-THP_SYSTEM</ID>
+
+  <Entry>
+    <ID>VAM-THP_SYSTEM_ROOT</ID>
+    <Name>Example</Name>
+    <Curiosity>VAM-THP_CURIOSITY</Curiosity>
+    <IsCuriosity/>
+    <IgnoreMoreToExplore/>
+
+    <ExploreFact>
+      <ID>VAM-THP_SYSTEM_EXPLORE_FACT</ID>
+      <Text>Example!</Text>
+    </ExploreFact>
+
+  </Entry>
+
+</AstroObjectEntry>

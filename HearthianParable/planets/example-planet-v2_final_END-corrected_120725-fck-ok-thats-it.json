@@ -1,0 +1,55 @@
+﻿{
+    "$schema": "https://raw.githubusercontent.com/Outer-Wilds-New-Horizons/new-horizons/main/NewHorizons/Schemas/body_schema.json",
+    "name": "Little_Big_Planet",
+    "starSystem": "Jam5",
+    "Base": {
+        "gravityFallOff": "inverseSquared",
+        "surfaceSize": 40,
+        "groundSize": 40,
+        "surfaceGravity": 20,
+		"soiOverride": 100,
+		"gravityAlignmentRadiusOverride": 100,
+		"hideProxy": true
+    },
+    "Orbit": {
+        "primaryBody": "Why_Star",
+        "staticPosition": {"x":0,"y":-600,"z":0},
+		"showOrbitLine": false
+    },
+	"Cloak":{
+		"radius":140,
+		"innerCloakRadius":120,
+		"nearCloakRadius":120,
+		"farCloakRadius":140,
+		"audio":"Assets/Suspense.mp3"
+	},
+	"ReferenceFrame": {
+		"enabled": false
+	},
+    "Props": {
+        "details": [
+            {
+                "path": "TimberHearth_Body/Sector_TH/Sector_Village/Sector_Observatory/Interactables_Observatory/AnglerFishExhibit/AnglerFishTankPivot/Beast_Anglerfish",
+				"position": {"x":-0.3,"y":42.9,"z":0.7},
+				"rotation": {"x":60,"y":135,"z":320},
+				"rename":"Ernesto",
+				"scale":0.015
+            },
+            {
+                "path": "Comet_Body/Sector_CO/Sector_CometInterior/Props_CometInterior/Prefab_NOM_Dead_Suit (1)",
+				"position":{"x":0,"y":40,"z":0},
+				"rename":"Vambok"
+            },
+            {
+                "path": "TimberHearth_Body/Sector_TH/Sector_Village/Interactables_Village/LaunchTower/Effects_HEA_Campfire/Props_HEA_Campfire",
+				"position":{"x":0,"y":39.9,"z":3},
+				"rotation": {"x":4,"y":0,"z":0}
+            },
+            {
+                "path": "TimberHearth_Body/Sector_TH/Sector_Village/Sector_LowerVillage/Characters_LowerVillage/Villager_HEA_Gneiss/Villager_HEA_Gneiss_ANIM_Tuning/Props_HEA_Banjo:Prop_HEA_Banjo",
+				"position":{"x":-0.3,"y":40,"z":1},
+				"rotation": {"x":90,"y":240,"z":0}
+            }
+        ]
+    }
+}
