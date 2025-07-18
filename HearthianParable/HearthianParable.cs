@@ -235,25 +235,22 @@ public class HearthianParable : ModBehaviour {
                 reachedCore = true;
                 Narration("planetCore");
             }
-            if(actionsQueue.Count > 0 && Time.realtimeSinceStartup > actionsQueue[0].Item1) {
+            if(actionsQueue.Count > 0 && Time.realtimeSinceStartup > actionsQueue[0].Item1)
                 actionsQueue[0].Item2();
-                if(actionsQueue.Count > 0) actionsQueue.RemoveAt(0);
-            }
         }
     }
 
     void Narration(string audioId) {
         ModHelper.Console.WriteLine(audioId + " playing", MessageType.Success);
-        if(audioSource.isPlaying) {
+        if(audioSource.isPlaying)
             audioSource.Stop();
-            actionsQueue.Clear();
-        }
+        actionsQueue.Clear();
         devSource.volume = (devCom ? 1 : 0);
         switch(audioId) {
             case "landing":
                 if(!devCom) {
                     audioSource.clip = audioClips["landing"];
-                    actionsQueue.Add((Time.realtimeSinceStartup + 2, () => { disappointed = true; }));
+                    actionsQueue.Add((Time.realtimeSinceStartup + 2, () => { disappointed = true; actionsQueue.RemoveAt(0); }));
                     audioSource.Play();
                 }
                 devSource.Stop();
@@ -277,7 +274,7 @@ public class HearthianParable : ModBehaviour {
                 break;
             case "hole2":
                 audioSource.clip = audioClips["hole2"];
-                actionsQueue.Add((Time.realtimeSinceStartup + 2.6f, () => { holeSaw = true; }));
+                actionsQueue.Add((Time.realtimeSinceStartup + 2.6f, () => { holeSaw = true; actionsQueue.RemoveAt(0); }));
                 audioSource.Play();
                 if(disappointed) actionsQueue.Add((Time.realtimeSinceStartup + audioLength["hole2"], () => { Narration("hole2A"); }));
                 break;
