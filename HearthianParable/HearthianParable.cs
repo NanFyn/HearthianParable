@@ -237,7 +237,7 @@ public class HearthianParable : ModBehaviour {
             }
             if(actionsQueue.Count > 0 && Time.realtimeSinceStartup > actionsQueue[0].Item1) {
                 actionsQueue[0].Item2();
-                actionsQueue.RemoveAt(0);
+                if(actionsQueue.Count > 0) actionsQueue.RemoveAt(0);
             }
         }
     }
@@ -368,7 +368,7 @@ public class HearthianParable : ModBehaviour {
                 break;
             default:
                 return;
-            }
+        }
     }
 
     public void Gravity_reverse() {
