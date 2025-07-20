@@ -95,8 +95,14 @@ public class HearthianParable : ModBehaviour {
     }
 
     void SpawnIntoSystem(string systemName = "Jam5") {
-        ModHelper.Console.WriteLine("Spawn into Why system: " + (systemName != "Jam5") + (layers[1] != null), MessageType.Success);
+        ModHelper.Console.WriteLine("Spawn into Why??? system: " + (systemName != "Jam5") + (layers[1] != null), MessageType.Success);
         if(systemName != "Jam5" || (layers[1] != null && layers[1].GetComponent<Gravity_reverse>() != null)) return;
+        Locator.GetShipLogManager().RevealFact("VAM-THP_ROOT_RUM");
+        Locator.GetShipLogManager().RevealFact("VAM-THP_END1_RUM");
+        Locator.GetShipLogManager().RevealFact("VAM-THP_END2_RUM");
+        Locator.GetShipLogManager().RevealFact("VAM-THP_END3_RUM");
+        Locator.GetShipLogManager().RevealFact("VAM-THP_END4_RUM");
+        Locator.GetShipLogManager().RevealFact("VAM-THP_END5_RUM");
         ModHelper.Events.Unity.FireInNUpdates(() => {
             for(int i = 1;i < 6;i++) GameObject.Find("Vambok_THP_Platform_Body/Sector/Item" + i).SetActive((gameState & 1 << (i - 1)) > 0);
             if((gameState & 31) > 30) {
