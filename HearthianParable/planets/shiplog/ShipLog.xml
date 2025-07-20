@@ -1,0 +1,78 @@
+<AstroObjectEntry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                 xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/Outer-Wilds-New-Horizons/new-horizons/main/NewHorizons/Schemas/shiplog_schema.xsd">
+  <ID>VAM-THP_ROOT</ID>
+
+  <Entry>
+    <ID>VAM-THP_ROOT</ID>
+    <Name>Weird system</Name>
+    <RumorFact>
+      <ID>VAM-THP_ROOT_RUM</ID>
+      <Text>Text for global entry when mod started</Text>
+    </RumorFact>
+    <ExploreFact>
+      <ID>VAM-THP_ROOT_FACT</ID>
+      <Text>Text when mod all completed</Text>
+    </ExploreFact>
+
+    <Entry>
+      <ID>VAM-THP_END1</ID>
+      <Name>Ending 1a</Name>
+      <RumorFact>
+        <ID>VAM-THP_END1_RUM</ID>
+        <Text>something?</Text>
+      </RumorFact>
+      <ExploreFact>
+        <ID>VAM-THP_END1_FACT</ID>
+        <Text>something!</Text>
+      </ExploreFact>
+    </Entry>
+    <Entry>
+      <ID>VAM-THP_END2</ID>
+      <Name>Ending 1b</Name>
+      <RumorFact>
+        <ID>VAM-THP_END2_RUM</ID>
+        <Text>something?</Text>
+      </RumorFact>
+      <ExploreFact>
+        <ID>VAM-THP_END2_FACT</ID>
+        <Text>something!</Text>
+      </ExploreFact>
+    </Entry>
+    <Entry>
+      <ID>VAM-THP_END3</ID>
+      <Name>Ending 2a</Name>
+      <RumorFact>
+        <ID>VAM-THP_END3_RUM</ID>
+        <Text>something?</Text>
+      </RumorFact>
+      <ExploreFact>
+        <ID>VAM-THP_END3_FACT</ID>
+        <Text>something!</Text>
+      </ExploreFact>
+    </Entry>
+    <Entry>
+      <ID>VAM-THP_END4</ID>
+      <Name>Ending 2b</Name>
+      <RumorFact>
+        <ID>VAM-THP_END4_RUM</ID>
+        <Text>something?</Text>
+      </RumorFact>
+      <ExploreFact>
+        <ID>VAM-THP_END4_FACT</ID>
+        <Text>something!</Text>
+      </ExploreFact>
+    </Entry>
+    <Entry>
+      <ID>VAM-THP_END5</ID>
+      <Name>Ending 3</Name>
+      <RumorFact>
+        <ID>VAM-THP_END5_RUM</ID>
+        <Text>something?</Text>
+      </RumorFact>
+      <ExploreFact>
+        <ID>VAM-THP_END5_FACT</ID>
+        <Text>something!</Text>
+      </ExploreFact>
+    </Entry>
+  </Entry>
+</AstroObjectEntry>
