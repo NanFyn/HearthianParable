@@ -8,6 +8,41 @@
         "x": 0,
         "y": 0
       }
-    }
+    },
+    {
+      "id": "VAM-THP_END1",
+      "position": {
+        "x": -90,
+        "y": 5
+      }
+    },
+    {
+      "id": "VAM-THP_END2",
+      "position": {
+        "x": 90,
+        "y": 5
+      }
+    },
+    {
+      "id": "VAM-THP_END3",
+      "position": {
+        "x": -70,
+        "y": -85
+      }
+    },
+    {
+      "id": "VAM-THP_END4",
+      "position": {
+        "x": 70,
+        "y": -85
+      }
+    },
+    {
+      "id": "VAM-THP_END5",
+      "position": {
+        "x": 0,
+        "y": -105
+      }
+    },
   ]
 }
