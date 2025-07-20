@@ -7,11 +7,11 @@
     <Name>Weird system</Name>
     <RumorFact>
       <ID>VAM-THP_ROOT_RUM</ID>
-      <Text>Text for global entry when mod started</Text>
+      <Text>The dead tree asked me to land on that huge golf ball around the purple star. I didn't know tree could talk and I still don't know if they can be trusted...</Text>
     </RumorFact>
     <ExploreFact>
       <ID>VAM-THP_ROOT_FACT</ID>
-      <Text>Text when mod all completed</Text>
+      <Text>Turns out I saved the tree from whatever. Now we're best buddies!</Text>
     </ExploreFact>
 
     <Entry>
@@ -19,11 +19,11 @@
       <Name>Ending 1a</Name>
       <RumorFact>
         <ID>VAM-THP_END1_RUM</ID>
-        <Text>something?</Text>
+        <Text>Placeholder text (change before release!!!)</Text>
       </RumorFact>
       <ExploreFact>
         <ID>VAM-THP_END1_FACT</ID>
-        <Text>something!</Text>
+        <Text>Seems like the dev wanted to chill inside the game and got assaulted by a scary fish. Ok fine whatever.</Text>
       </ExploreFact>
     </Entry>
     <Entry>
@@ -31,11 +31,11 @@
       <Name>Ending 1b</Name>
       <RumorFact>
         <ID>VAM-THP_END2_RUM</ID>
-        <Text>something?</Text>
+        <Text>Dolorem ipsum, quia dolor sit, amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt, ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur?</Text>
       </RumorFact>
       <ExploreFact>
         <ID>VAM-THP_END2_FACT</ID>
-        <Text>something!</Text>
+        <Text>The anglerfish I met seems quite a known figure around here. These people are crazy!</Text>
       </ExploreFact>
     </Entry>
     <Entry>
@@ -43,11 +43,11 @@
       <Name>Ending 2a</Name>
       <RumorFact>
         <ID>VAM-THP_END3_RUM</ID>
-        <Text>something?</Text>
+        <Text>Example!</Text>
       </RumorFact>
       <ExploreFact>
         <ID>VAM-THP_END3_FACT</ID>
-        <Text>something!</Text>
+        <Text>I seem to have offended the dev by skipping their boring commentary. Good thing I don't care!</Text>
       </ExploreFact>
     </Entry>
     <Entry>
@@ -55,11 +55,11 @@
       <Name>Ending 2b</Name>
       <RumorFact>
         <ID>VAM-THP_END4_RUM</ID>
-        <Text>something?</Text>
+        <Text>Shiplog_fact_rumor_text.txt</Text>
       </RumorFact>
       <ExploreFact>
         <ID>VAM-THP_END4_FACT</ID>
-        <Text>something!</Text>
+        <Text>How is that cheating! That's just how this game works!</Text>
       </ExploreFact>
     </Entry>
     <Entry>
@@ -67,11 +67,11 @@
       <Name>Ending 3</Name>
       <RumorFact>
         <ID>VAM-THP_END5_RUM</ID>
-        <Text>something?</Text>
+        <Text>Could not find rumor text! Please complain to the mod author. Don't let them sleep until you get the rumor text you rightfully deserve!</Text>
       </RumorFact>
       <ExploreFact>
         <ID>VAM-THP_END5_FACT</ID>
-        <Text>something!</Text>
+        <Text>I deactivated the whole mod from the settings. Unfortunately it came back!</Text>
       </ExploreFact>
     </Entry>
   </Entry>
