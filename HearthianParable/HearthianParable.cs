@@ -18,13 +18,13 @@ public class HearthianParable : ModBehaviour {
     readonly Dictionary<string, Transform> endVolumes = [];
     GravityVolume grav;
 
-    GameObject player;
+    GameObject player, daTree;
     AudioSource audioSource, devSource;
     readonly Dictionary<string, AudioClip> audioClips = [];
     readonly Dictionary<string, float> audioLength = [];
     readonly List<(float, Action)> actionsQueue = [];
     int gameState = 0;
-    bool landed, disappointed, holeFound, holeSaw, nomaiFound, upsideDown, sawSettings, heardDev, devCom, devSpedUp, devFound, reachedCore;
+    bool sawTree, landed, disappointed, holeFound, holeSaw, nomaiFound, upsideDown, sawSettings, heardDev, devCom, devSpedUp, devFound, reachedCore;
 
     public void Awake() {
         Instance = this;
@@ -97,25 +97,20 @@ public class HearthianParable : ModBehaviour {
     void SpawnIntoSystem(string systemName = "Jam5") {
         ModHelper.Console.WriteLine("Spawn into Why??? system: " + (systemName != "Jam5") + (layers[1] != null), MessageType.Success);
         if(systemName != "Jam5" || (layers[1] != null && layers[1].GetComponent<Gravity_reverse>() != null)) return;
-        Locator.GetShipLogManager().RevealFact("VAM-THP_ROOT_RUM");
-        Locator.GetShipLogManager().RevealFact("VAM-THP_END1_RUM");
-        Locator.GetShipLogManager().RevealFact("VAM-THP_END2_RUM");
-        Locator.GetShipLogManager().RevealFact("VAM-THP_END3_RUM");
-        Locator.GetShipLogManager().RevealFact("VAM-THP_END4_RUM");
-        Locator.GetShipLogManager().RevealFact("VAM-THP_END5_RUM");
         ModHelper.Events.Unity.FireInNUpdates(() => {
             for(int i = 1;i < 6;i++) GameObject.Find("Vambok_THP_Platform_Body/Sector/Item" + i).SetActive((gameState & 1 << (i - 1)) > 0);
+            daTree = GameObject.Find("Vambok_THP_Platform_Body/Sector/Treepot/TreeBad");
             if((gameState & 31) > 30) {
                 GameObject.Find("Vambok_THP_Platform_Body/Sector/Treepot/TreeGood").SetActive(true);
-                GameObject.Find("Vambok_THP_Platform_Body/Sector/Treepot/TreeBad").SetActive(false);
+                daTree.SetActive(false);
             } else {
                 GameObject.Find("Vambok_THP_Platform_Body/Sector/Treepot/TreeGood").SetActive(false);
-                GameObject.Find("Vambok_THP_Platform_Body/Sector/Treepot/TreeBad").SetActive(true);
+                daTree.SetActive(true);
             }
             player = GameObject.Find("Player_Body");
             audioSource = player.AddComponent<AudioSource>();
             devSource = player.AddComponent<AudioSource>();
-            devSource.clip = audioClips["devcom"];//TODO
+            devSource.clip = audioClips["devcom"];
             devSource.volume = (devCom ? 1 : 0);
             devSource.Play();
             layers[0] = NewHorizons.GetPlanet("Big_Little_Planet");
@@ -172,6 +167,15 @@ public class HearthianParable : ModBehaviour {
 
     void Update() {
         if(layers[0] != null) {
+            if(!sawTree && (player.transform.position - daTree.transform.position).magnitude < 5) {
+                sawTree = true;
+                Locator.GetShipLogManager().RevealFact("VAM-THP_ROOT_RUM");
+                Locator.GetShipLogManager().RevealFact("VAM-THP_END1_RUM");
+                Locator.GetShipLogManager().RevealFact("VAM-THP_END2_RUM");
+                Locator.GetShipLogManager().RevealFact("VAM-THP_END3_RUM");
+                Locator.GetShipLogManager().RevealFact("VAM-THP_END4_RUM");
+                Locator.GetShipLogManager().RevealFact("VAM-THP_END5_RUM");
+            }
             float planet_dist = (player.transform.position - layers[0].transform.position).magnitude;
             if(planet_dist < 370 && planet_dist > 190) {
                 if(planet_dist > 310) {
