@@ -375,24 +375,32 @@ public class HearthianParable : ModBehaviour {
     }
 
     void Ending(string type) {
+        string factUnlocked = "";
         switch(type) {
         case "deactivated":
+            factUnlocked = "VAM-THP_END5_FACT";
             gameState |= 1 << 4;
             break;
         case "ernestoDev":
+            factUnlocked = "VAM-THP_END1_FACT";
             gameState |= 1 << 3;
             break;
         case "ernesto":
+            factUnlocked = "VAM-THP_END2_FACT";
             gameState |= 1 << 2;
             break;
         case "cheater":
+            factUnlocked = "VAM-THP_END4_FACT";
             gameState |= 1 << 1;
             break;
         case "kickedOut":
+            factUnlocked = "VAM-THP_END3_FACT";
             gameState |= 1 << 0;
             break;
         default: break;
         }
+        Locator.GetShipLogManager().RevealFact(factUnlocked);
+        if((gameState & 31) > 30) Locator.GetShipLogManager().RevealFact("VAM-THP_ROOT_FACT");
         SaveState();
         endVolumes[type].position = player.transform.position;
         endVolumes[type].parent = player.transform;
