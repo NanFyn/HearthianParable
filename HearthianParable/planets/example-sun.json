@@ -20,6 +20,7 @@
     "stellarDeathType": "none",
     "size": 300,
     "solarLuminosity": 1,
+    "lightRadius": 2500,
     "lightTint": {
       "r": 210,
       "g": 200,
