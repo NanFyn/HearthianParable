@@ -167,7 +167,7 @@ public class HearthianParable : ModBehaviour {
 
     void Update() {
         if(layers[0] != null) {
-            if(!sawTree && (player.transform.position - daTree.transform.position).magnitude < 5) {
+            if(!sawTree && (player.transform.position - daTree.transform.position).magnitude < 10) {
                 sawTree = true;
                 Locator.GetShipLogManager().RevealFact("VAM-THP_ROOT_RUM");
                 Locator.GetShipLogManager().RevealFact("VAM-THP_END1_RUM");
