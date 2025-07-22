@@ -6,5 +6,5 @@ AssetBundleManifest:
       Name: audiobundle
       Dependencies: {}
     Info_1:
-      Name: bundle
+      Name: vam-thp_bundle
       Dependencies: {}
