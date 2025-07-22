@@ -5,6 +5,7 @@
   <Entry>
     <ID>VAM-THP_ROOT</ID>
     <Name>Weird system</Name>
+    <Curiosity>VAM-THP_ROOT</Curiosity><IsCuriosity/>
     <RumorFact>
       <ID>VAM-THP_ROOT_RUM</ID>
       <Text>The dead tree asked me to land on that huge golf ball around the purple star. I didn't know tree could talk and I still don't know if they can be trusted...</Text>
@@ -17,6 +18,7 @@
     <Entry>
       <ID>VAM-THP_END1</ID>
       <Name>Ending 1a</Name>
+      <Curiosity>VAM-THP_ROOT</Curiosity>
       <RumorFact>
         <ID>VAM-THP_END1_RUM</ID>
         <Text>Placeholder text (change before release!!!)</Text>
@@ -29,6 +31,7 @@
     <Entry>
       <ID>VAM-THP_END2</ID>
       <Name>Ending 1b</Name>
+      <Curiosity>VAM-THP_ROOT</Curiosity>
       <RumorFact>
         <ID>VAM-THP_END2_RUM</ID>
         <Text>Dolorem ipsum, quia dolor sit, amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt, ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur?</Text>
@@ -41,6 +44,7 @@
     <Entry>
       <ID>VAM-THP_END3</ID>
       <Name>Ending 2a</Name>
+      <Curiosity>VAM-THP_ROOT</Curiosity>
       <RumorFact>
         <ID>VAM-THP_END3_RUM</ID>
         <Text>Example!</Text>
@@ -53,6 +57,7 @@
     <Entry>
       <ID>VAM-THP_END4</ID>
       <Name>Ending 2b</Name>
+      <Curiosity>VAM-THP_ROOT</Curiosity>
       <RumorFact>
         <ID>VAM-THP_END4_RUM</ID>
         <Text>Shiplog_fact_rumor_text.txt</Text>
@@ -65,6 +70,7 @@
     <Entry>
       <ID>VAM-THP_END5</ID>
       <Name>Ending 3</Name>
+      <Curiosity>VAM-THP_ROOT</Curiosity>
       <RumorFact>
         <ID>VAM-THP_END5_RUM</ID>
         <Text>Could not find rumor text! Please complain to the mod author. Don't let them sleep until you get the rumor text you rightfully deserve!</Text>
