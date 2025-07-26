@@ -10,6 +10,10 @@
       <ID>VAM-THP_ROOT_RUM</ID>
       <Text>The dead tree asked me to land on that huge golf ball around the purple star. I didn't know tree could talk and I still don't know if they can be trusted...</Text>
     </RumorFact>
+    <RumorFact>
+      <ID>VAM-THP_END_1</ID>
+	  <Text>I really hope this is getting somewhere eventually.</Text>
+    </RumorFact>
     <ExploreFact>
       <ID>VAM-THP_ROOT_FACT</ID>
       <Text>Turns out I saved the tree from whatever. Now we're best buddies!</Text>
@@ -22,7 +26,15 @@
       <RumorFact>
         <ID>VAM-THP_END1_RUM</ID>
         <Text>Placeholder text (change before release!!!)</Text>
-      </RumorFact>
+	  </RumorFact>
+	  <RumorFact>
+		<ID>VAM-THP_END1_1</ID>
+		<Text>The dev finally left their commentary to work on a "secret easter egg below the star"? I wonder what could be there...</Text>
+		<AltText>
+		  <Text>I found the dev on a tiny hidden planet, they were eaten alive by an anglerfish! The voices seemed as surprised as I was. I wonder if the dev commented their own demise...</Text>
+		  <Condition>VAM-THP_END2_FACT</Condition>
+		</AltText>
+	  </RumorFact>
       <ExploreFact>
         <ID>VAM-THP_END1_FACT</ID>
         <Text>Seems like the dev wanted to chill inside the game and got assaulted by a scary fish. Ok fine whatever.</Text>
@@ -35,7 +47,19 @@
       <RumorFact>
         <ID>VAM-THP_END2_RUM</ID>
         <Text>Dolorem ipsum, quia dolor sit, amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt, ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur?</Text>
+		<AltText>
+		  <Text>Dolorem ipsum, quia dolor sit, amet, consectetur...</Text>
+		  <Condition>VAM-THP_END2_1</Condition>
+		</AltText>
       </RumorFact>
+	  <RumorFact>
+		<ID>VAM-THP_END2_1</ID>
+		<Text>The dev finally left their commentary to work on a "secret easter egg below the star"? I wonder what could be there...</Text>
+		<AltText>
+		  <Text>I found the dev on a tiny hidden planet, they were eaten alive by an anglerfish! I heard them as they met their fate but I wonder if I would have with commentary off...</Text>
+		  <Condition>VAM-THP_END1_FACT</Condition>
+		</AltText>
+	  </RumorFact>
       <ExploreFact>
         <ID>VAM-THP_END2_FACT</ID>
         <Text>The anglerfish I met seems quite a known figure around here. These people are crazy!</Text>
@@ -48,7 +72,23 @@
       <RumorFact>
         <ID>VAM-THP_END3_RUM</ID>
         <Text>Example!</Text>
+		<AltText>
+		  <Text>One of the weird voices I heard mentionned checking this mod's settings in the pause menu. I'm bored so I might as well.</Text>
+		  <Condition>VAM-THP_END5_1</Condition>
+		</AltText>
       </RumorFact>
+	  <RumorFact>
+		<ID>VAM-THP_END3_1</ID>
+		<Text>Ok so the dev didn't build their puzzles yet and they made the V key invert their planet's gravity. Now we need to go deeper.</Text>
+	  </RumorFact>
+	  <RumorFact>
+		<ID>VAM-THP_END3_2</ID>
+		<Text>A little... bacteria(??) complained about the boring commentary, but since I deactivated it to preserve my sanity they went away without even explaining why they were being annoying. I should try to come back with commentary on (or without enabling it in the first place).</Text>
+		<AltText>
+		  <Text>Thank to the annoying little thing I can press the K key to fast forward this mod's boring commentary.</Text>
+		  <Condition>VAM-THP_END_1</Condition>
+		</AltText>
+	  </RumorFact>
       <ExploreFact>
         <ID>VAM-THP_END3_FACT</ID>
         <Text>I seem to have offended the dev by skipping their boring commentary. Good thing I don't care!</Text>
@@ -62,6 +102,22 @@
         <ID>VAM-THP_END4_RUM</ID>
         <Text>Shiplog_fact_rumor_text.txt</Text>
       </RumorFact>
+	  <RumorFact>
+		<ID>VAM-THP_END4_1</ID>
+		<Text>It seems there is some kind of "hole" in the white dull planet?</Text>
+	  </RumorFact>
+	  <RumorFact>
+		<ID>VAM-THP_END4_3</ID>
+		<Text>I found Nomai gravity bending floors. They may be the only decent things in there so why not walking on them.</Text>
+	  </RumorFact>
+	  <RumorFact>
+		<ID>VAM-THP_END4_2</ID>
+		<Text>Ok so the dev didn't build their puzzles yet and they made the V key invert their planet's gravity. Now we need to go deeper.</Text>
+		<AltText>
+		  <Text>A little... bacteria(??) complained about the boring commentary, but since I deactivated it to preserve my sanity they went away without even explaining why they were being annoying. I should try to come back with commentary on (or without enabling it in the first place).</Text>
+		  <Condition>VAM-THP_END3_2</Condition>
+		</AltText>
+	  </RumorFact>
       <ExploreFact>
         <ID>VAM-THP_END4_FACT</ID>
         <Text>How is that cheating! That's just how this game works!</Text>
@@ -74,6 +130,10 @@
       <RumorFact>
         <ID>VAM-THP_END5_RUM</ID>
         <Text>Could not find rumor text! Please complain to the mod author. Don't let them sleep until you get the rumor text you rightfully deserve!</Text>
+      </RumorFact>
+      <RumorFact>
+        <ID>VAM-THP_END5_1</ID>
+        <Text>One of the weird voices I heard mentionned checking this mod's settings in the pause menu. I'm bored so I might as well.</Text>
       </RumorFact>
       <ExploreFact>
         <ID>VAM-THP_END5_FACT</ID>

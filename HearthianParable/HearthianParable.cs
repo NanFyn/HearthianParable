@@ -5,7 +5,7 @@ using System;//
 using System.Collections.Generic;//
 using System.IO;//
 using System.Reflection;//
-using UnityEngine;
+using UnityEngine;//
 using UnityEngine.InputSystem;//
 
 namespace HearthianParable;
@@ -17,14 +17,172 @@ public class HearthianParable : ModBehaviour {
     readonly Transform[] triggers = new Transform[3];
     readonly Dictionary<string, Transform> endVolumes = [];
     GravityVolume grav;
-
     GameObject player, daTree;
+    ShipLogManager shipLogManager;
+    int subtitlesState = 0;
+    DialogueBoxVer2 subtitles;
     AudioSource audioSource, devSource;
     readonly Dictionary<string, AudioClip> audioClips = [];
     readonly Dictionary<string, float> audioLength = [];
     readonly List<(float, Action)> actionsQueue = [];
     int gameState = 0;
     bool sawTree, landed, disappointed, holeFound, holeSaw, nomaiFound, upsideDown, sawSettings, heardDev, devCom, devSpedUp, devFound, reachedCore;
+    readonly string[] dialogues = ["<color=#f08080>- Wait, that's all?</color>",
+        "<color=#add8e6>- Seems like it!</color>",
+        "<color=#f08080>- That's all they made in two weeks?</color>",
+        "<color=#add8e6>- I guess so.</color> <color=#f08080>- Ok that's very bad I mean</color> <color=#add8e6>- Yeah.</color>",
+        "<color=#f08080>- You know?</color> <color=#add8e6>- Sure sure.</color>",
+        "<color=#f08080>- What even is that planet? It's huge right?</color> <color=#add8e6>- Yep.</color>",
+        "<color=#f08080>- But the theme was \"miniature\"! I don't think that mod, or whatever this is really, even qualifies.</color>",
+        "<color=#add8e6>- Very true, it's a disqualification right there.</color> <color=#f08080>- You bet!</color>",
+        "<color=#f08080>Is there even one single prop on that planet?</color>",
+        "<color=#add8e6>- I don't see any.</color> <color=#f08080>- Yeah.</color>",
+        "<color=#add8e6>- Guess it's time to try another one then?</color>",
+        "<color=#f08080>- Sure let's get out of that crap we tried everything...</color> <color=#add8e6>- Did you</color> <color=orange>check the settings</color><color=#add8e6>?</color> <color=#f08080>- Why?</color>",
+        "<color=#add8e6>- I don't know. Maybe there is something like</color> <color=#f08080>- Like what?</color>",
+        "<color=#add8e6>- I don't know!</color> <color=#f08080>- Like a \"Please toggle to have an actual mod\" setting?</color>",
+        "<color=#add8e6>- Well maybe</color> <color=#f08080>- That's dumb.</color>",
+        "<color=#add8e6>- Sure sure, but doesn't hurt to check right?</color> <color=#f08080>- I guess...</color>",
+        "",
+        "<color=#f08080>- What's that?</color>",
+        "<color=#add8e6>- Idk, it's...</color>",
+        "",
+        "<color=#add8e6>- Oh! Ok so there IS at least one thing.</color>",
+        "<color=#f08080>- Well it's a...</color> <color=#add8e6>- Yeah.</color>",
+        "",
+        "<color=#f08080>- Just a hole right?</color> <color=#add8e6>- Yup.</color>",
+        "",
+        "<color=#f08080>- Man that mod is so bad!</color> <color=#add8e6>- Yeah it's funny at this point.</color>",
+        "",
+        "<color=#f08080>- Developper's comm... seriously?</color> <color=#add8e6>- Ok sure!</color>",
+        "",
+        "<color=#f08080>- Right like: \"Oh here we though: what about making an empty mod?\"!</color>",
+        "",
+        "<color=#f08080>- Right like: \"Oh here we though: what about... a hole!\"!</color>",
+        "",
+        "<color=#f08080>- \"That's contemporary art you know. When I saw the theme I instantly though about a saxophone. It came to me in a dream actually!\"</color>",
+        "<color=#f08080>- That's a joke right? I mean...</color> <color=#add8e6>- Let's try it!</color>",
+        "<color=#f08080>- For real?</color> <color=#add8e6>- Why not?</color>",
+        "<color=#f08080>- Well, there are serious entries to play and this is clearly...</color>",
+        "<color=#f08080>- Well ok but if it starts to brag about this empty sphere I swear I leave that system never to return.</color>",
+        "",
+        "<color=#f08080>- Developpers commentary?</color> <color=#add8e6>- Mmh.</color>",
+        "<color=#f08080>- That's a bit... strange but, ok let's see.</color>",
+        "",
+        "<color=#f08080>- Oh, Nomai floors...</color> <color=#add8e6>- Interesting.</color>",
+        "",
+        "<color=#add8e6>- Wait look! I see Nomai floors too.</color>",
+        "<color=#f08080>- Oh. Ok let's check this out.</color>",
+        "",
+        "<color=#f08080>- Are we?</color> <color=#add8e6>- Upside down?</color> <color=#f08080>- Yeah.</color>",
+        "<color=#add8e6>- What now?</color>",
+        "<color=#f08080>- Idk. There should be something to let us go lower. But I don't see...</color> <color=#add8e6>- Did you</color> <color=orange>check the settings</color><color=#add8e6>?</color>",
+        "",
+        "<color=#f08080>- Mmh, let's see..</color>",
+        "",
+        "<color=#f08080>- Yeah, but there's only... mmh.</color>",
+        "",
+        "<color=yellow>Pssst, hey you! Hey you!</color>",
+        "<color=yellow>Gigantous four-eyed creature.</color>",
+        "<color=yellow>I'm here! On the floor!</color>",
+        "<color=yellow>Yeah, well I'm really reaaaally small so you... well nevermind.</color>",
+        "<color=yellow>These dev commentaries are pretty boring right?</color>",
+        "",
+        "<color=yellow>Well I added a key for you to fast forward them!</color>",
+        "<color=yellow>You just need to</color> <color=orange>press K and it will speed up!</color>",
+        "<color=yellow>Yeah yeah no problem, I'm happy to help!</color>",
+        "<color=yellow>But I'll go now before you... you know, before you step on me by accident.</color>",
+        "<color=yellow>Well, at least I hope it would be by accident...</color>",
+        "<color=yellow>Bye!</color>",
+        "",
+        "<color=yellow>Oh! I see you muted them already, good call!</color>",
+        "<color=yellow>I guess you don't need my help then!</color>",
+        "<color=yellow>Bye!</color>",
+        "",
+        "<color=yellow>Wait... You never found them? But, how did you...</color>",
+        "<color=yellow>Ooooooh, you're cheating! You came here after a reset, or you looked up the solution online!</color>",
+        "<color=yellow>Ok well, here is what you came for I guess!</color>",
+        "",
+        "<color=#f08080>- Wow! What's that?</color>",
+        "<color=#add8e6>- Is that the dev?</color>",
+        "<color=#f08080>- Certainly looks like them.</color>",
+        "<color=#add8e6>- Ouch. I guess that explains... well</color>",
+        "<color=#f08080>- The mod</color> <color=#add8e6>- Yeah</color>",
+        "<color=#f08080>- I think I know that anglerfish.</color>",
+        "<color=#add8e6>- You what?</color> <color=#f08080>- Nevermind.</color>",
+        "<color=#add8e6>- Do you think the fish is an allegory for the challenges of human communication?</color>",
+        "<color=#f08080>- What are you even talking about?</color>",
+        "<color=#f08080>- I wonder though... how did the mod get uploaded?</color>",
+        "",
+        "Hi there! Welcome to this little tour of the future mod!",
+        "So this is a work-in-progress entry for the Miniature Mod Jam of 2025.",
+        "The idea is to build something that fits within the shared solar system,",
+        "so I decided to go with a kind of layered planet with a shrinking mechanic at its core.",
+        "The theme got me thinking about scale and recursion and I just ran with it. <color=#f08080>- Please let's get it over with!</color> <color=#add8e6>- Sssh listen.</color>",
+        "Right now you're seeing this big planet orbiting a purple star right? Go check it out.",
+        "",
+        "Yup! That's my planet! <color=#f08080>- Really nothing to brag about.</color>",
+        "It doesn't have a name yet, I've just been calling it \"the onion\" because, well, it's built in layers.",
+        "The outer surface is just temporary for now, kind of a placeholder. <color=#f08080>- No kidding.</color>",
+        "But eventually there'll be several puzzles scattered around here, and you'll need to solve them to unlock access to a big building.",
+        "It'll be like a hub to descend further into the planet. <color=#f08080>- Doesn't they know the jam is over?</color>",
+        "Inside the building, you'll find a huge hole. <color=#add8e6>- Yeah that's strange.</color>",
+        "And the hole is already there actually! <color=#f08080>- What a blessing!</color>",
+        "Try finding it, it shouldn't be far.",
+        "",
+        "So you see it's covered in gravitational surfaces, so when you step up on the edge, gravity flips and you can walk down the inside.",
+        "You end up upside down under the surface but, well it feels natural once you get used to it.",
+        "You end up like, below the ground walking on its ceiling. I mean, the inner floor? Yeah let's call it the ceiling.",
+        "Yeah I guess that's more like a ceiling.",
+        "Well all ceilings are upside-down floors anyway, right? <color=#f08080>- Oh my god won't you shut up?!</color>",
+        "So the plan is that by exploring each layer's ceiling, you can solve puzzles to finally flip gravity again to descend onto the next layer's \"floor\".",
+        "For now of course there is no puzzle so <color=orange>you can flip gravity by hitting the V key</color>.",
+        "<color=#add8e6>- That's good to know!</color> <color=#f08080>- Yay. More empty areas...</color>",
+        "So I guess it's as a kind of vertical puzzle dungeon, each layer being its own little world with its own gravitational orientation.",
+        "Well, actually each layer is two worlds, because you know there's a floor but there's also a ceiling every time which, as we saw earlier, is basically a reversed floor.",
+        "<color=#f08080>- Can we just try another mod now?</color>",
+        "I guess we could say that floors are reversed ceilings? <color=#add8e6>- Maybe it'll get interesting at some point?</color>",
+        "But well we just need to agree on what to keep.",
+        "Anyway. Maybe you could try to reach the center now?",
+        "",
+        "Oh you're there great! Now here's where the miniature part comes in.",
+        "Once you reach this very core you'll find a sort of device (which I haven't built yet, but it'll be there). <color=#f08080>- Well, no it's not.</color>",
+        "Activating it will shrink you, not just visually, but mechanically too.",
+        "So when the time loop restarts, you'll still be tiny, and that means you can't just go back through the original puzzles:",
+        "the entrances will be too big, or the jumps too far, or you won't weigh enough to trigger stuff idk.",
+        "Each layer will also have miniature-sized puzzles that are tailored to your new size.",
+        "So you'll have to find new paths, use new tools, and interact with the environment again differently.",
+        "Of course it's not implemented yet <color=#f08080>- Of course.</color> but I tried binding the probe's camera rotation to it and...",
+        "well let's not talk about what can happen if you change size too much. I absolutely need to fix that at some point.",
+        "Ok so, you get to the core, you shrink, the planet doesn't change but you do, and that changes how you interact with everything.",
+        "And eventually you'll reach a point where you're small enough to fit through a tiny passage.",
+        "Humm it'll probably be somewhere like, somewhere like here for example, near the core, and it'll lead to the end of the mod!",
+        "<color=#f08080>- Please tell me that's the end of their rambling!</color>",
+        "Most of this isn't implemented yet, but the holes are there! And I've got a bunch of prototypes sketched out.",
+        "The biggest challenge is going to be making each layer feel unique even though you're technically traversing the same space again and again, but smaller.",
+        "I might also play around with sound or perception like, what if when you're small, the ambient noise changes? Or time feels different?",
+        "But for now I'll be working on the <color=orange>secret easter egg below the star</color>. If it works it should be able to turn the player into a Nomai,",
+        "and it will be a place to chill under the stars with marshmallows!",
+        "<color=#f08080>- Easter eggs before functionalities! What a nice working routine... no wonder they never finished.</color>",
+        "So now let's get back to work!",
+        "<color=#add8e6>- Wait, is it over?</color>",
+        "<color=#f08080>- I don't hear them anymore.</color>",
+        "<color=#add8e6>- Ok so just like that they went to their secret place or whatever and then... nothing?</color>",
+        "<color=#f08080>- Are you're kidding?? I'm glad it's finally over!</color>",
+        "",
+        "- Wha- what? Woooow! Did you fast forward my entire commentary??",
+        "That's rude!",
+        "Just... please go away now.",
+        "Go on.",
+        "Get out!",
+        "Ok you know what?",
+        "",
+        "- Oh it worked! I can't believe it I'm inside the game!",
+        "Waw! That star is soo big! And it's not that hot. Wow!",
+        "Now I'll be chillin a bit, playing banjo and eating marshmallows...",
+        "Oh what's that growing light?",
+        "Oh, oh no it's AAAAAAAAAAAAAAAAAAAAAAAAAAAAAH"];
+    readonly int[] dialoguesTimings = [0, 3, 4, 7, 11, 12, 16, 23, 30, 34, 37, 39, 45, 48, 53, 55, 666, 0, 2, 666, 0, 4, 666, 0, 666, 0, 666, 0, 666, 0, 666, 0, 666, 0, 10, 13, 16, 21, 666, 0, 3, 666, 0, 666, 0, 3, 666, 0, 5, 7, 666, 0, 666, 0, 666, 2, 5, 8, 12, 18, 666, 0, 4, 8, 11, 17, 21, 666, 0, 5, 7, 666, 0, 6, 14, 666, 0, 3, 5, 7, 10, 14, 16, 19, 23, 26, 666, 0, 4, 10, 14, 21, 27, 666, 0, 4, 10, 16, 24, 29, 33, 36, 666, 0, 9, 17, 30, 34, 40, 50, 56, 59, 69, 81, 83, 88, 91, 666, 0, 6, 15, 20, 30, 38, 45, 53, 61, 70, 80, 86, 96, 100, 109, 120, 132, 142, 145, 151, 158, 160, 162, 168, 666, 80, 86, 93, 101, 106, 110, 666, 0, 5, 13, 19, 22];
 
     public void Awake() {
         Instance = this;
@@ -56,6 +214,7 @@ public class HearthianParable : ModBehaviour {
     }
     void SaveState() {
         actionsQueue.Clear();
+        subtitlesState = 0;
         PlayerData._currentGameSave.shipLogFactSaves["HearthlingParable_gameState"] = new ShipLogFactSave(gameState.ToString());
         PlayerData.SaveCurrentGame();
     }
@@ -107,10 +266,13 @@ public class HearthianParable : ModBehaviour {
                 GameObject.Find("Vambok_THP_Platform_Body/Sector/Treepot/TreeGood").SetActive(false);
                 daTree.SetActive(true);
             }
+            shipLogManager = Locator.GetShipLogManager();
+            subtitles = GameObject.FindWithTag("DialogueGui").GetRequiredComponent<DialogueBoxVer2>();
             player = GameObject.Find("Player_Body");
             audioSource = player.AddComponent<AudioSource>();
             devSource = player.AddComponent<AudioSource>();
             devSource.clip = audioClips["devcom"];
+            if(devCom) SubtitlesManager(88);
             devSource.volume = (devCom ? 1 : 0);
             devSource.Play();
             layers[0] = NewHorizons.GetPlanet("Big_Little_Planet");
@@ -169,12 +331,12 @@ public class HearthianParable : ModBehaviour {
         if(layers[0] != null) {
             if(!sawTree && (player.transform.position - daTree.transform.position).magnitude < 10) {
                 sawTree = true;
-                Locator.GetShipLogManager().RevealFact("VAM-THP_ROOT_RUM");
-                Locator.GetShipLogManager().RevealFact("VAM-THP_END1_RUM");
-                Locator.GetShipLogManager().RevealFact("VAM-THP_END2_RUM");
-                Locator.GetShipLogManager().RevealFact("VAM-THP_END3_RUM");
-                Locator.GetShipLogManager().RevealFact("VAM-THP_END4_RUM");
-                Locator.GetShipLogManager().RevealFact("VAM-THP_END5_RUM");
+                shipLogManager.RevealFact("VAM-THP_ROOT_RUM");
+                shipLogManager.RevealFact("VAM-THP_END1_RUM");
+                shipLogManager.RevealFact("VAM-THP_END2_RUM");
+                shipLogManager.RevealFact("VAM-THP_END3_RUM");
+                shipLogManager.RevealFact("VAM-THP_END4_RUM");
+                shipLogManager.RevealFact("VAM-THP_END5_RUM");
             }
             float planet_dist = (player.transform.position - layers[0].transform.position).magnitude;
             if(planet_dist < 370 && planet_dist > 190) {
@@ -210,6 +372,7 @@ public class HearthianParable : ModBehaviour {
                             devSpedUp = true;
                             devSource.Stop();
                             devSource.clip = audioClips["devcomfast"];
+                            SubtitlesManager(144);
                             devSource.Play();
                             devSource.time = currentTime;
                         }
@@ -247,134 +410,163 @@ public class HearthianParable : ModBehaviour {
             }
             if(actionsQueue.Count > 0 && Time.realtimeSinceStartup > actionsQueue[0].Item1)
                 actionsQueue[0].Item2();
+            SubtitlesManager();
         }
     }
 
     void Narration(string audioId) {
         //ModHelper.Console.WriteLine(audioId + " playing", MessageType.Success);
-        if(audioSource.isPlaying)
-            audioSource.Stop();
+        if(audioSource.isPlaying) audioSource.Stop();
         actionsQueue.Clear();
         devSource.volume = (devCom ? 1 : 0);
         switch(audioId) {
-            case "landing":
-                if(!devCom) {
-                    audioSource.clip = audioClips["landing"];
-                    actionsQueue.Add((Time.realtimeSinceStartup + 2, () => { disappointed = true; actionsQueue.RemoveAt(0); }));
-                    audioSource.Play();
-                }
-                devSource.Stop();
-                devSource.clip = audioClips["devlanding"];
-                devSource.Play();
-                break;
-            case "hole":
-                if(!devCom) {
-                    if(disappointed) {
-                        audioSource.clip = audioClips["holea"];
-                        actionsQueue.Add((Time.realtimeSinceStartup + audioLength["holea"], () => { Narration("hole2"); }));
-                    } else {
-                        audioSource.clip = audioClips["hole"];
-                        actionsQueue.Add((Time.realtimeSinceStartup + audioLength["hole"], () => { Narration("hole2"); }));
-                    }
-                    audioSource.Play();
-                }
-                devSource.Stop();
-                devSource.clip = audioClips["devhole"];
-                devSource.Play();
-                break;
-            case "hole2":
-                audioSource.clip = audioClips["hole2"];
-                actionsQueue.Add((Time.realtimeSinceStartup + 2.6f, () => { holeSaw = true; actionsQueue.RemoveAt(0); }));
+        case "landing":
+            if(!devCom) {
+                audioSource.clip = audioClips["landing"];
+                SubtitlesManager(1);
+                actionsQueue.Add((Time.realtimeSinceStartup + 2, () => { disappointed = true; actionsQueue.RemoveAt(0); }));
                 audioSource.Play();
-                if(disappointed) actionsQueue.Add((Time.realtimeSinceStartup + audioLength["hole2"], () => { Narration("hole2A"); }));
-                break;
-            case "hole2A":
-                audioSource.clip = audioClips["hole2a"];
-                audioSource.Play();
-                break;
-            case "settings":
-                if(nomaiFound) audioSource.clip = audioClips["settingsa"];
-                else {
-                    audioSource.clip = audioClips["settings"];
-                    actionsQueue.Add((Time.realtimeSinceStartup + audioLength["settings"], () => { Narration("settings2"); }));
+            } else SubtitlesManager(95);
+            devSource.Stop();
+            devSource.clip = audioClips["devlanding"];
+            devSource.Play();
+            break;
+        case "hole":
+            if(!devCom) {
+                if(disappointed) {
+                    audioSource.clip = audioClips["holea"];
+                    SubtitlesManager(21);
+                    actionsQueue.Add((Time.realtimeSinceStartup + audioLength["holea"], () => { Narration("hole2"); }));
+                } else {
+                    audioSource.clip = audioClips["hole"];
+                    SubtitlesManager(18);
+                    actionsQueue.Add((Time.realtimeSinceStartup + audioLength["hole"], () => { Narration("hole2"); }));
                 }
                 audioSource.Play();
-                break;
-            case "settings2":
+            } else SubtitlesManager(104);
+            devSource.Stop();
+            devSource.clip = audioClips["devhole"];
+            devSource.Play();
+            break;
+        case "hole2":
+            audioSource.clip = audioClips["hole2"];
+            SubtitlesManager(24);
+            actionsQueue.Add((Time.realtimeSinceStartup + 2.6f, () => { holeSaw = true; actionsQueue.RemoveAt(0); }));
+            audioSource.Play();
+            if(disappointed) actionsQueue.Add((Time.realtimeSinceStartup + audioLength["hole2"], () => { Narration("hole2A"); }));
+            break;
+        case "hole2A":
+            audioSource.clip = audioClips["hole2a"];
+            SubtitlesManager(26);
+            audioSource.Play();
+            break;
+        case "settings":
+            if(nomaiFound) {
+                audioSource.clip = audioClips["settingsa"];
+                SubtitlesManager(40);
+            } else {
+                audioSource.clip = audioClips["settings"];
+                SubtitlesManager(28);
+                actionsQueue.Add((Time.realtimeSinceStartup + audioLength["settings"], () => { Narration("settings2"); }));
+            }
+            audioSource.Play();
+            break;
+        case "settings2":
+            if(holeSaw) {
+                audioSource.clip = audioClips["settings2a"];
+                SubtitlesManager(32);
+                actionsQueue.Add((Time.realtimeSinceStartup + audioLength["settings2a"], () => { Narration("settings3"); }));
+            } else {
+                audioSource.clip = audioClips["settings2"];
+                SubtitlesManager(30);
+                actionsQueue.Add((Time.realtimeSinceStartup + audioLength["settings2"], () => { Narration("settings3"); }));
+            }
+            audioSource.Play();
+            break;
+        case "settings3":
+            audioSource.clip = audioClips["settings3"];
+            SubtitlesManager(34);
+            audioSource.Play();
+            break;
+        case "nomaiFloors":
+            nomaiFound = true;
+            if(!devCom) {
                 if(holeSaw) {
-                    audioSource.clip = audioClips["settings2a"];
-                    actionsQueue.Add((Time.realtimeSinceStartup + audioLength["settings2a"], () => { Narration("settings3"); }));
+                    audioSource.clip = audioClips["nomaia"];
+                    SubtitlesManager(45);
                 } else {
-                    audioSource.clip = audioClips["settings2"];
-                    actionsQueue.Add((Time.realtimeSinceStartup + audioLength["settings2"], () => { Narration("settings3"); }));
+                    audioSource.clip = audioClips["nomai"];
+                    SubtitlesManager(43);
                 }
                 audioSource.Play();
-                break;
-            case "settings3":
-                audioSource.clip = audioClips["settings3"];
+            }
+            break;
+        case "innerSide":
+            if(!devCom) {
+                audioSource.clip = audioClips["innerside"];
+                SubtitlesManager(48);
+                actionsQueue.Add((Time.realtimeSinceStartup + audioLength["innerside"], () => { Narration("innerSide2"); }));
                 audioSource.Play();
-                break;
-            case "nomaiFloors":
-                nomaiFound = true;
-                if(!devCom) {
-                    if(holeSaw) audioSource.clip = audioClips["nomaia"];
-                    else audioSource.clip = audioClips["nomai"];
-                    audioSource.Play();
-                }
-                break;
-            case "innerSide":
-                if(!devCom) {
-                    audioSource.clip = audioClips["innerside"];
-                    actionsQueue.Add((Time.realtimeSinceStartup + audioLength["innerside"], () => { Narration("innerSide2"); }));
-                    audioSource.Play();
-                }
-                break;
-            case "innerSide2":
-                if(sawSettings) audioSource.clip = audioClips["innerside2a"];
-                else audioSource.clip = audioClips["innerside2"];
-                audioSource.Play();
-                break;
-            case "planetCore":
-                audioSource.clip = audioClips["core"];
-                actionsQueue.Add((Time.realtimeSinceStartup + audioLength["core"], () => { Narration("planetCore2"); }));
-                audioSource.Play();
-                break;
-            case "planetCore2":
-                if(heardDev) {
-                    if(devCom) {
-                        audioSource.clip = audioClips["core1"];
-                        actionsQueue.Add((Time.realtimeSinceStartup + audioLength["core1"], () => { Narration("devCore"); }));
-                    } else {
-                        audioSource.clip = audioClips["core2"];
-                        devSource.Stop();
-                        devSource.clip = audioClips["devcore"];
-                        devSource.Play();
-                    }
-                } else {
-                    audioSource.clip = audioClips["core3"];
-                    actionsQueue.Add((Time.realtimeSinceStartup + audioLength["core3"], () => { Ending("cheater"); }));
-                }
-                audioSource.Play();
-                break;
-            case "devCore":
-                devSource.Stop();
-                devSource.clip = audioClips["devcore"];
-                devSource.Play();
-                break;
-            case "devFound":
+            }
+            break;
+        case "innerSide2":
+            if(sawSettings) {
+                audioSource.clip = audioClips["innerside2a"];
+                SubtitlesManager(54);
+            } else {
+                audioSource.clip = audioClips["innerside2"];
+                SubtitlesManager(52);
+            }
+            audioSource.Play();
+            break;
+        case "planetCore":
+            audioSource.clip = audioClips["core"];
+            SubtitlesManager(56);
+            actionsQueue.Add((Time.realtimeSinceStartup + audioLength["core"], () => { Narration("planetCore2"); }));
+            audioSource.Play();
+            break;
+        case "planetCore2":
+            if(heardDev) {
                 if(devCom) {
-                    devSource.Stop();
-                    devSource.clip = audioClips["devdead"];
-                    devSource.Play();
-                    actionsQueue.Add((Time.realtimeSinceStartup + audioLength["devdead"], () => { Ending("ernestoDev"); }));
+                    audioSource.clip = audioClips["core1"];
+                    SubtitlesManager(62);
+                    actionsQueue.Add((Time.realtimeSinceStartup + audioLength["core1"], () => { Narration("devCore"); }));
                 } else {
-                    audioSource.clip = audioClips["devfound"];
-                    actionsQueue.Add((Time.realtimeSinceStartup + audioLength["devfound"], () => { Ending("ernesto"); }));
-                    audioSource.Play();
+                    audioSource.clip = audioClips["core2"];
+                    SubtitlesManager(69);
+                    devSource.Stop();
+                    devSource.clip = audioClips["devcore"];
+                    devSource.Play();
                 }
-                break;
-            default:
-                return;
+            } else {
+                audioSource.clip = audioClips["core3"];
+                SubtitlesManager(73);
+                actionsQueue.Add((Time.realtimeSinceStartup + audioLength["core3"], () => { Ending("cheater"); }));
+            }
+            audioSource.Play();
+            break;
+        case "devCore":
+            devSource.Stop();
+            devSource.clip = audioClips["devcore"];
+            SubtitlesManager(119);
+            devSource.Play();
+            break;
+        case "devFound":
+            if(devCom) {
+                devSource.Stop();
+                devSource.clip = audioClips["devdead"];
+                SubtitlesManager(151);
+                devSource.Play();
+                actionsQueue.Add((Time.realtimeSinceStartup + audioLength["devdead"], () => { Ending("ernestoDev"); }));
+            } else {
+                audioSource.clip = audioClips["devfound"];
+                SubtitlesManager(77);
+                actionsQueue.Add((Time.realtimeSinceStartup + audioLength["devfound"], () => { Ending("ernesto"); }));
+                audioSource.Play();
+            }
+            break;
+        default:
+            return;
         }
     }
 
@@ -409,11 +601,64 @@ public class HearthianParable : ModBehaviour {
             break;
         default: break;
         }
-        Locator.GetShipLogManager().RevealFact(factUnlocked);
-        if((gameState & 31) > 30) Locator.GetShipLogManager().RevealFact("VAM-THP_ROOT_FACT");
+        shipLogManager.RevealFact(factUnlocked);
+        if((gameState & 31) > 30) shipLogManager.RevealFact("VAM-THP_ROOT_FACT");
         SaveState();
         endVolumes[type].position = player.transform.position;
         endVolumes[type].parent = player.transform;
+    }
+
+    void SubtitlesManager(int inState = 0) {
+        if(inState > 0) subtitlesState = inState;
+        if(subtitlesState > 0) {
+            if(audioSource.isPlaying || (devCom && devSource.isPlaying)) {
+                if((audioSource.isPlaying ? audioSource.time : devSource.time) > dialoguesTimings[subtitlesState - 1]) {
+                    subtitles._potentialOptions = null;
+                    subtitles.ResetAllText();
+                    subtitles.SetMainFieldDialogueText(dialogues[subtitlesState - 1]);
+                    subtitles._buttonPromptElement.gameObject.SetActive(false);
+                    subtitles._mainFieldTextEffect?.StartTextEffect();
+                    SubtitleShipLogs(subtitlesState);
+                    subtitlesState++;
+                }
+            } else if(dialogues[subtitlesState - 1] == "") {
+                //subtitles.InitializeOptionsUI();
+                subtitles.SetVisible(false);
+                subtitlesState = 0;
+            }
+        }
+    }
+    void SubtitleShipLogs(int state) {
+        switch(state) {
+        case 12:
+        case 50:
+            shipLogManager.RevealFact("VAM-THP_END5_1");
+            break;
+        case 102:
+            shipLogManager.RevealFact("VAM-THP_END4_1");
+            break;
+        case 43:
+        case 45:
+        case 104:
+            shipLogManager.RevealFact("VAM-THP_END4_3");
+            break;
+        case 110:
+            shipLogManager.RevealFact("VAM-THP_END4_2");
+            shipLogManager.RevealFact("VAM-THP_END3_1");
+            break;
+        case 70:
+            shipLogManager.RevealFact("VAM-THP_END3_2");
+            break;
+        case 63:
+            shipLogManager.RevealFact("VAM-THP_END_1");
+            break;
+        case 135:
+            shipLogManager.RevealFact("VAM-THP_END1_1");
+            shipLogManager.RevealFact("VAM-THP_END2_1");
+            break;
+        default:
+            break;
+        }
     }
 }
 
