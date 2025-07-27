@@ -19,14 +19,17 @@ public class HearthianParable : ModBehaviour {
     GravityVolume grav;
     GameObject player, daTree;
     ShipLogManager shipLogManager;
+    SubmitActionCloseMenu closeMenu, closeOptMenu;
     int subtitlesState = 0;
     DialogueBoxVer2 subtitles;
+    ScreenPrompt speedrunPrompt;
+    float speedrunTime, speedrunIGTime;
     AudioSource audioSource, devSource;
     readonly Dictionary<string, AudioClip> audioClips = [];
     readonly Dictionary<string, float> audioLength = [];
     readonly List<(float, Action)> actionsQueue = [];
-    int gameState = 0;
-    bool sawTree, landed, disappointed, holeFound, holeSaw, nomaiFound, upsideDown, sawSettings, heardDev, devCom, devSpedUp, devFound, reachedCore;
+    int gameState = 0, difficulty = 0;
+    bool sawTree, landed, disappointed, holeFound, holeSaw, nomaiFound, upsideDown, sawSettings, heardDev, devCom, devSpedUp, devFound, reachedCore, speedRunTimer;
     readonly string[] dialogues = ["<color=#f08080>- Wait, that's all?</color>",
         "<color=#add8e6>- Seems like it!</color>",
         "<color=#f08080>- That's all they made in two weeks?</color>",
@@ -209,21 +212,53 @@ public class HearthianParable : ModBehaviour {
 
     void LoadData() {
         ShipLogFactSave saveData = PlayerData.GetShipLogFactSave("HearthlingParable_gameState");
-        if(saveData != null) gameState = int.Parse(saveData.id);
-        devCom = ModHelper.Config.GetSettingsValue<bool>("Developper's commentary");
+        gameState = (saveData != null) ? int.Parse(saveData.id) : 0;
+        saveData = PlayerData.GetShipLogFactSave("HearthlingParable_gameSettings");
+        if(saveData != null) {
+            int settings = int.Parse(saveData.id);
+            devCom = (settings & 1) > 0;
+            speedRunTimer = (settings & 2) > 0;
+            difficulty = (settings >> 2);
+        } else {
+            devCom = false;
+            speedRunTimer = false;
+            difficulty = 0;
+        }
+        ModHelper.Config.SetSettingsValue("DevCom", devCom);
+        ModHelper.Config.SetSettingsValue("Speedrun", speedRunTimer);
+        ModHelper.Config.SetSettingsValue("Difficulty", difficulty switch {
+            1 => "Normal: Subtitles",
+            2 => "Hard: Only audio",
+            3 => "Insane: Nothing",
+            _ => "Easy: Shiplogs"
+        });
+        ModHelper.Config.SetSettingsValue("Mod", true);
+    }
+    void SaveQuit() {
+        actionsQueue.Clear();
+        subtitles.SetVisible(false);
+        subtitlesState = 0;
+        SaveState();
     }
     void SaveState() {
-        actionsQueue.Clear();
-        subtitlesState = 0;
         PlayerData._currentGameSave.shipLogFactSaves["HearthlingParable_gameState"] = new ShipLogFactSave(gameState.ToString());
+        PlayerData._currentGameSave.shipLogFactSaves["HearthlingParable_gameSettings"] = new ShipLogFactSave((difficulty * 4 + (speedRunTimer ? 2 : 0) + (devCom ? 1 : 0)).ToString());
         PlayerData.SaveCurrentGame();
     }
     public override void Configure(IModConfig config) {
         if(LoadManager.GetCurrentScene() == OWScene.SolarSystem) {
-            devCom = config.GetSettingsValue<bool>("Developper's commentary");
-            if(devSource != null) devSource.volume = (devCom ? 1 : 0);
+            GetSettings(config);
+            SaveState();
             if(!config.GetSettingsValue<bool>("Mod")) {
+                closeOptMenu?.Submit();
+                closeMenu?.Submit();
                 Ending("deactivated");
+            }
+            speedrunPrompt?.SetVisibility(speedRunTimer);
+            if(devSource != null) devSource.volume = (devCom ? 1 : 0);
+            if(devCom) {
+                audioSource.Stop();
+                actionsQueue.Clear();
             }
             if(landed && !sawSettings && !devCom) {
                 sawSettings = true;
@@ -231,11 +266,25 @@ public class HearthianParable : ModBehaviour {
             }
         }
     }
+    void GetSettings(IModConfig config = null) {
+        config ??= ModHelper.Config;
+        devCom = config.GetSettingsValue<bool>("DevCom");
+        speedRunTimer = config.GetSettingsValue<bool>("Speedrun");
+        difficulty = config.GetSettingsValue<string>("Difficulty") switch {
+            "Normal: Subtitles" => 1,
+            "Hard: Only audio" => 2,
+            "Insane: Nothing" => 3,
+            _ => 0
+        };
+    }
 
     public void OnCompleteSceneLoad(OWScene previousScene, OWScene newScene) {
         ModHelper.Config.SetSettingsValue("Mod", true);
-        if(newScene != OWScene.SolarSystem) return;
-        devCom = ModHelper.Config.GetSettingsValue<bool>("Developper's commentary");
+        if(newScene != OWScene.SolarSystem) {
+            if(speedrunPrompt != null && speedrunIGTime>0) speedrunIGTime -= Time.realtimeSinceStartup;
+            return;
+        }
+        GetSettings();
         landed = disappointed = holeFound = holeSaw = nomaiFound = upsideDown = sawSettings = heardDev = devSpedUp = devFound = reachedCore = false;
         if(audioClips.Count <= 0) {
             AssetBundle audioBundle = AssetBundle.LoadFromFile(Path.Combine(ModHelper.Manifest.ModFolderPath, "Assets", "audiobundle"));
@@ -248,8 +297,10 @@ public class HearthianParable : ModBehaviour {
                 }
         }
         SubmitActionLoadScene actionLoadScene = GameObject.Find("PauseMenuBlock").transform.Find("PauseMenuItems/PauseMenuItemsLayout/Button-ExitToMainMenu").GetComponent<SubmitActionLoadScene>();
-        actionLoadScene.OnSubmitAction -= SaveState;
-        actionLoadScene.OnSubmitAction += SaveState;
+        actionLoadScene.OnSubmitAction -= SaveQuit;
+        actionLoadScene.OnSubmitAction += SaveQuit;
+        closeMenu = GameObject.Find("PauseMenuBlock").transform.Find("PauseMenuItems/PauseMenuItemsLayout/Button-Unpause").GetComponent<SubmitActionCloseMenu>();
+        closeOptMenu = GameObject.Find("PauseMenu/OptionsCanvas").transform.Find("OptionsMenu-Panel/OptionsButtons/UIElement-SaveAndExit").GetComponent<SubmitActionCloseMenu>();
         SpawnIntoSystem();
     }
 
@@ -266,6 +317,13 @@ public class HearthianParable : ModBehaviour {
                 GameObject.Find("Vambok_THP_Platform_Body/Sector/Treepot/TreeGood").SetActive(false);
                 daTree.SetActive(true);
             }
+            if(speedrunPrompt == null) {
+                speedrunPrompt = new ScreenPrompt("");
+                speedrunTime = Time.realtimeSinceStartup;
+            }
+            speedrunIGTime += Time.realtimeSinceStartup;
+            Locator.GetPromptManager().AddScreenPrompt(speedrunPrompt, PromptPosition.UpperRight);
+            speedrunPrompt.SetVisibility(speedRunTimer);
             shipLogManager = Locator.GetShipLogManager();
             subtitles = GameObject.FindWithTag("DialogueGui").GetRequiredComponent<DialogueBoxVer2>();
             player = GameObject.Find("Player_Body");
@@ -273,7 +331,7 @@ public class HearthianParable : ModBehaviour {
             devSource = player.AddComponent<AudioSource>();
             devSource.clip = audioClips["devcom"];
             if(devCom) SubtitlesManager(88);
-            devSource.volume = (devCom ? 1 : 0);
+            devSource.volume = ((devCom && difficulty < 3) ? 1 : 0);
             devSource.Play();
             layers[0] = NewHorizons.GetPlanet("Big_Little_Planet");
             layers[1] = layers[0].transform.Find("Sector/Layer1").gameObject;
@@ -329,6 +387,7 @@ public class HearthianParable : ModBehaviour {
 
     void Update() {
         if(layers[0] != null) {
+            speedrunPrompt.SetText("Real time: " + (Time.realtimeSinceStartup - speedrunTime).ToString("f") + "\nIn game time: " + (Time.realtimeSinceStartup - speedrunIGTime).ToString("f"));
             if(!sawTree && (player.transform.position - daTree.transform.position).magnitude < 10) {
                 sawTree = true;
                 shipLogManager.RevealFact("VAM-THP_ROOT_RUM");
@@ -363,6 +422,7 @@ public class HearthianParable : ModBehaviour {
                         }
                     } else {
                         devCom = false;
+                        ModHelper.Config.SetSettingsValue("DevCom", devCom);
                         Ending("kickedOut");
                     }
                 } else {
@@ -371,6 +431,7 @@ public class HearthianParable : ModBehaviour {
                         if(currentTime < 78) {
                             devSpedUp = true;
                             devSource.Stop();
+                            if(difficulty > 2) return;
                             devSource.clip = audioClips["devcomfast"];
                             SubtitlesManager(144);
                             devSource.Play();
@@ -416,8 +477,9 @@ public class HearthianParable : ModBehaviour {
 
     void Narration(string audioId) {
         //ModHelper.Console.WriteLine(audioId + " playing", MessageType.Success);
-        if(audioSource.isPlaying) audioSource.Stop();
+        audioSource.Stop();
         actionsQueue.Clear();
+        if(difficulty > 2) return;
         devSource.volume = (devCom ? 1 : 0);
         switch(audioId) {
         case "landing":
@@ -603,12 +665,14 @@ public class HearthianParable : ModBehaviour {
         }
         shipLogManager.RevealFact(factUnlocked);
         if((gameState & 31) > 30) shipLogManager.RevealFact("VAM-THP_ROOT_FACT");
-        SaveState();
+        SaveQuit();
         endVolumes[type].position = player.transform.position;
         endVolumes[type].parent = player.transform;
+        endVolumes[type].GetComponent<SphereShape>().enabled = true;
     }
 
     void SubtitlesManager(int inState = 0) {
+        if(difficulty > 1) return;
         if(inState > 0) subtitlesState = inState;
         if(subtitlesState > 0) {
             if(audioSource.isPlaying || (devCom && devSource.isPlaying)) {
@@ -629,6 +693,7 @@ public class HearthianParable : ModBehaviour {
         }
     }
     void SubtitleShipLogs(int state) {
+        if(difficulty > 0) return;
         switch(state) {
         case 12:
         case 50:

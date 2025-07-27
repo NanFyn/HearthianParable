@@ -2,11 +2,33 @@
     "$schema": "https://raw.githubusercontent.com/ow-mods/owml/master/schemas/config_schema.json",
     "enabled": true,
     "settings": {
-        "Developper's commentary": {
+        "DevCom": {
+            "title": "Developper's commentary",
+            "tooltip": "  ",
+            "type": "toggle",
+            "value": false
+        },
+        "Difficulty": {
+            "title": "Difficulty",
+            "tooltip": "Level of verbosity. Normal: no shiplog hints, Hard: no subtitles either, Insane: not even voices",
+            "type": "selector",
+            "value": "Easy: Shiplogs",
+            "options": [
+                "Easy: Shiplogs",
+                "Normal: Subtitles",
+                "Hard: Only audio",
+                "Insane: Nothing"
+            ]
+        },
+        "Speedrun": {
+            "title": "Speedrun timer",
+            "tooltip": "(restart the game to reset)",
             "type": "toggle",
             "value": false
         },
         "Mod": {
+            "title": "Mod",
+            "tooltip": "  ",
             "type": "toggle",
             "value": true
         }
