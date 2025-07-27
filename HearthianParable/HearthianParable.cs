@@ -479,7 +479,11 @@ public class HearthianParable : ModBehaviour {
         //ModHelper.Console.WriteLine(audioId + " playing", MessageType.Success);
         audioSource.Stop();
         actionsQueue.Clear();
-        if(difficulty > 2) return;
+        if(difficulty > 2) {
+            if(audioId == "planetCore" && !heardDev) Ending("cheater");
+            else if(audioId == "devFound") Ending(devCom ? "ernestoDev" : "ernesto");
+            return;
+        }
         devSource.volume = (devCom ? 1 : 0);
         switch(audioId) {
         case "landing":
