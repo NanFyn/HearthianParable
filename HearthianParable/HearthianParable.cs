@@ -25,6 +25,8 @@ public class HearthianParable : ModBehaviour {
     ScreenPrompt speedrunPrompt;
     float speedrunTime, speedrunIGTime;
     AudioSource audioSource, devSource;
+    string currentDevClip;
+    float silenceTimer;
     readonly Dictionary<string, AudioClip> audioClips = [];
     readonly Dictionary<string, float> audioLength = [];
     readonly List<(float, Action)> actionsQueue = [];
@@ -203,14 +205,15 @@ public class HearthianParable : ModBehaviour {
         NewHorizons.LoadConfigs(this);
 
         new Harmony("Vambok.HearthianParable").PatchAll(Assembly.GetExecutingAssembly());
-
-        ModHelper.Events.Unity.RunWhen(PlayerData.IsLoaded, LoadData);
+        //ModHelper.Events.Unity.RunWhen(PlayerData.IsLoaded, LoadData);
+        LoadManager.OnStartSceneLoad += LoadData;
         OnCompleteSceneLoad(OWScene.TitleScreen, OWScene.TitleScreen); // We start on title screen
         LoadManager.OnCompleteSceneLoad += OnCompleteSceneLoad;
         //NewHorizons.GetStarSystemLoadedEvent().AddListener(SpawnIntoSystem);
     }
 
-    void LoadData() {
+    void LoadData(OWScene previousScene, OWScene newScene) {
+        if(newScene != OWScene.SolarSystem) return;
         ShipLogFactSave saveData = PlayerData.GetShipLogFactSave("HearthlingParable_gameState");
         gameState = (saveData != null) ? int.Parse(saveData.id) : 0;
         saveData = PlayerData.GetShipLogFactSave("HearthlingParable_gameSettings");
@@ -233,11 +236,17 @@ public class HearthianParable : ModBehaviour {
             _ => "Easy: Shiplogs"
         });
         ModHelper.Config.SetSettingsValue("Mod", true);
+        //Cleanup: How to?? that:
+        //PlayerData._currentGameSave.shipLogFactSaves.Remove("VAM-THP_END1_RUM");
+        //PlayerData._currentGameSave.shipLogFactSaves.Remove("VAM-THP_END2_RUM");
+        //PlayerData._currentGameSave.shipLogFactSaves.Remove("VAM-THP_END3_RUM");
+        //PlayerData._currentGameSave.shipLogFactSaves.Remove("VAM-THP_END4_RUM");
+        //PlayerData._currentGameSave.shipLogFactSaves.Remove("VAM-THP_END5_RUM");
+        //PlayerData._currentGameSave.shipLogFactSaves.Remove("VAM-THP_END_1");
     }
     void SaveQuit() {
         actionsQueue.Clear();
-        subtitles.SetVisible(false);
-        subtitlesState = 0;
+        UpdateSubtitle(0);
         SaveState();
     }
     void SaveState() {
@@ -255,11 +264,6 @@ public class HearthianParable : ModBehaviour {
                 Ending("deactivated");
             }
             speedrunPrompt?.SetVisibility(speedRunTimer);
-            if(devSource != null) devSource.volume = (devCom ? 1 : 0);
-            if(devCom) {
-                audioSource.Stop();
-                actionsQueue.Clear();
-            }
             if(landed && !sawSettings && !devCom) {
                 sawSettings = true;
                 Narration("settings");
@@ -270,12 +274,16 @@ public class HearthianParable : ModBehaviour {
         config ??= ModHelper.Config;
         devCom = config.GetSettingsValue<bool>("DevCom");
         speedRunTimer = config.GetSettingsValue<bool>("Speedrun");
+        int old_difficulty = difficulty;
         difficulty = config.GetSettingsValue<string>("Difficulty") switch {
             "Normal: Subtitles" => 1,
             "Hard: Only audio" => 2,
             "Insane: Nothing" => 3,
             _ => 0
         };
+        if((!devCom && devSource != null && devSource.volume > 0.1f) || (difficulty > 1 && old_difficulty < 2)) UpdateSubtitle(0);
+        else if(difficulty < 2 && old_difficulty > 1) UpdateSubtitle(subtitlesState - 1);
+        else if(devCom && devSource != null && devSource.volume < 0.1f) subtitlesState = 17;
     }
 
     public void OnCompleteSceneLoad(OWScene previousScene, OWScene newScene) {
@@ -329,7 +337,8 @@ public class HearthianParable : ModBehaviour {
             player = GameObject.Find("Player_Body");
             audioSource = player.AddComponent<AudioSource>();
             devSource = player.AddComponent<AudioSource>();
-            devSource.clip = audioClips["devcom"];
+            currentDevClip = "devcom";
+            devSource.clip = audioClips[currentDevClip];
             if(devCom) SubtitlesManager(88);
             devSource.volume = ((devCom && difficulty < 3) ? 1 : 0);
             devSource.Play();
@@ -378,24 +387,24 @@ public class HearthianParable : ModBehaviour {
             grav._gravitationalMass = 1000f * 12 * 400 * 400;// 1000*surfaceGravity*surfaceSize^gravFallOff
             grav._lowerSurfaceRadius = 400;// = surfaceSize
             grav._cutoffRadius = 100;// = groundSize
-            /*MeshRenderer[] dr = layers[0].GetComponentsInChildren<MeshRenderer>();
-            foreach(MeshRenderer mr in dr) {
-                mr.material = new Material(Shader.Find("Diffuse"));
-            }*/
         }, 61);
     }
 
     void Update() {
         if(layers[0] != null) {
-            speedrunPrompt.SetText("Real time: " + (Time.realtimeSinceStartup - speedrunTime).ToString("f") + "\nIn game time: " + (Time.realtimeSinceStartup - speedrunIGTime).ToString("f"));
+            float speedrunTot = Time.realtimeSinceStartup - speedrunTime;
+            float speedrunIGTot = Time.realtimeSinceStartup - speedrunIGTime;
+            int speedrunMins = (int)(speedrunTot / 60);
+            int speedrunIGMins = (int)(speedrunIGTot / 60);
+            speedrunPrompt.SetText("Real time: " + speedrunMins + "mn" + (speedrunTot - speedrunMins * 60).ToString("f") + "s\nIn game time: " + speedrunIGMins + "mn" + (speedrunIGTot - speedrunIGMins * 60).ToString("f") + "s");
             if(!sawTree && (player.transform.position - daTree.transform.position).magnitude < 10) {
                 sawTree = true;
                 shipLogManager.RevealFact("VAM-THP_ROOT_RUM");
-                shipLogManager.RevealFact("VAM-THP_END1_RUM");
-                shipLogManager.RevealFact("VAM-THP_END2_RUM");
-                shipLogManager.RevealFact("VAM-THP_END3_RUM");
-                shipLogManager.RevealFact("VAM-THP_END4_RUM");
-                shipLogManager.RevealFact("VAM-THP_END5_RUM");
+                //shipLogManager.RevealFact("VAM-THP_END1_RUM");
+                //shipLogManager.RevealFact("VAM-THP_END2_RUM");
+                //shipLogManager.RevealFact("VAM-THP_END3_RUM");
+                //shipLogManager.RevealFact("VAM-THP_END4_RUM");
+                //shipLogManager.RevealFact("VAM-THP_END5_RUM");
             }
             float planet_dist = (player.transform.position - layers[0].transform.position).magnitude;
             if(planet_dist < 370 && planet_dist > 190) {
@@ -413,6 +422,7 @@ public class HearthianParable : ModBehaviour {
             if(Keyboard.current.vKey.wasPressedThisFrame) {
                 Gravity_reverse();
             }
+            if(devSource != null) devSource.volume = (devCom && !audioSource.isPlaying ? 1 : 0);
             if(devCom) {
                 if(!heardDev) heardDev = true;
                 if(devSpedUp) {
@@ -432,7 +442,8 @@ public class HearthianParable : ModBehaviour {
                             devSpedUp = true;
                             devSource.Stop();
                             if(difficulty > 2) return;
-                            devSource.clip = audioClips["devcomfast"];
+                            currentDevClip = "devcomfast";
+                            devSource.clip = audioClips[currentDevClip];
                             SubtitlesManager(144);
                             devSource.Play();
                             devSource.time = currentTime;
@@ -484,7 +495,6 @@ public class HearthianParable : ModBehaviour {
             else if(audioId == "devFound") Ending(devCom ? "ernestoDev" : "ernesto");
             return;
         }
-        devSource.volume = (devCom ? 1 : 0);
         switch(audioId) {
         case "landing":
             if(!devCom) {
@@ -494,7 +504,8 @@ public class HearthianParable : ModBehaviour {
                 audioSource.Play();
             } else SubtitlesManager(95);
             devSource.Stop();
-            devSource.clip = audioClips["devlanding"];
+            currentDevClip = "devlanding";
+            devSource.clip = audioClips[currentDevClip];
             devSource.Play();
             break;
         case "hole":
@@ -511,48 +522,59 @@ public class HearthianParable : ModBehaviour {
                 audioSource.Play();
             } else SubtitlesManager(104);
             devSource.Stop();
-            devSource.clip = audioClips["devhole"];
+            currentDevClip = "devhole";
+            devSource.clip = audioClips[currentDevClip];
             devSource.Play();
             break;
         case "hole2":
-            audioSource.clip = audioClips["hole2"];
-            SubtitlesManager(24);
-            actionsQueue.Add((Time.realtimeSinceStartup + 2.6f, () => { holeSaw = true; actionsQueue.RemoveAt(0); }));
-            audioSource.Play();
-            if(disappointed) actionsQueue.Add((Time.realtimeSinceStartup + audioLength["hole2"], () => { Narration("hole2A"); }));
+            if(!devCom) {
+                audioSource.clip = audioClips["hole2"];
+                SubtitlesManager(24);
+                actionsQueue.Add((Time.realtimeSinceStartup + 2.6f, () => { holeSaw = true; actionsQueue.RemoveAt(0); }));
+                audioSource.Play();
+                if(disappointed) actionsQueue.Add((Time.realtimeSinceStartup + audioLength["hole2"], () => { Narration("hole2A"); }));
+            }
             break;
         case "hole2A":
-            audioSource.clip = audioClips["hole2a"];
-            SubtitlesManager(26);
-            audioSource.Play();
+            if(!devCom) {
+                audioSource.clip = audioClips["hole2a"];
+                SubtitlesManager(26);
+                audioSource.Play();
+            }
             break;
         case "settings":
-            if(nomaiFound) {
-                audioSource.clip = audioClips["settingsa"];
-                SubtitlesManager(40);
-            } else {
-                audioSource.clip = audioClips["settings"];
-                SubtitlesManager(28);
-                actionsQueue.Add((Time.realtimeSinceStartup + audioLength["settings"], () => { Narration("settings2"); }));
+            if(!devCom) {
+                if(nomaiFound) {
+                    audioSource.clip = audioClips["settingsa"];
+                    SubtitlesManager(40);
+                } else {
+                    audioSource.clip = audioClips["settings"];
+                    SubtitlesManager(28);
+                    actionsQueue.Add((Time.realtimeSinceStartup + audioLength["settings"], () => { Narration("settings2"); }));
+                }
+                audioSource.Play();
             }
-            audioSource.Play();
             break;
         case "settings2":
-            if(holeSaw) {
-                audioSource.clip = audioClips["settings2a"];
-                SubtitlesManager(32);
-                actionsQueue.Add((Time.realtimeSinceStartup + audioLength["settings2a"], () => { Narration("settings3"); }));
-            } else {
-                audioSource.clip = audioClips["settings2"];
-                SubtitlesManager(30);
-                actionsQueue.Add((Time.realtimeSinceStartup + audioLength["settings2"], () => { Narration("settings3"); }));
+            if(!devCom) {
+                if(holeSaw) {
+                    audioSource.clip = audioClips["settings2a"];
+                    SubtitlesManager(32);
+                    actionsQueue.Add((Time.realtimeSinceStartup + audioLength["settings2a"], () => { Narration("settings3"); }));
+                } else {
+                    audioSource.clip = audioClips["settings2"];
+                    SubtitlesManager(30);
+                    actionsQueue.Add((Time.realtimeSinceStartup + audioLength["settings2"], () => { Narration("settings3"); }));
+                }
+                audioSource.Play();
             }
-            audioSource.Play();
             break;
         case "settings3":
-            audioSource.clip = audioClips["settings3"];
-            SubtitlesManager(34);
-            audioSource.Play();
+            if(!devCom) {
+                audioSource.clip = audioClips["settings3"];
+                SubtitlesManager(34);
+                audioSource.Play();
+            }
             break;
         case "nomaiFloors":
             nomaiFound = true;
@@ -576,14 +598,16 @@ public class HearthianParable : ModBehaviour {
             }
             break;
         case "innerSide2":
-            if(sawSettings) {
-                audioSource.clip = audioClips["innerside2a"];
-                SubtitlesManager(54);
-            } else {
-                audioSource.clip = audioClips["innerside2"];
-                SubtitlesManager(52);
+            if(!devCom) {
+                if(sawSettings) {
+                    audioSource.clip = audioClips["innerside2a"];
+                    SubtitlesManager(54);
+                } else {
+                    audioSource.clip = audioClips["innerside2"];
+                    SubtitlesManager(52);
+                }
+                audioSource.Play();
             }
-            audioSource.Play();
             break;
         case "planetCore":
             audioSource.clip = audioClips["core"];
@@ -601,7 +625,8 @@ public class HearthianParable : ModBehaviour {
                     audioSource.clip = audioClips["core2"];
                     SubtitlesManager(69);
                     devSource.Stop();
-                    devSource.clip = audioClips["devcore"];
+                    currentDevClip = "devcore";
+                    devSource.clip = audioClips[currentDevClip];
                     devSource.Play();
                 }
             } else {
@@ -613,14 +638,16 @@ public class HearthianParable : ModBehaviour {
             break;
         case "devCore":
             devSource.Stop();
-            devSource.clip = audioClips["devcore"];
+            currentDevClip = "devcore";
+            devSource.clip = audioClips[currentDevClip];
             SubtitlesManager(119);
             devSource.Play();
             break;
         case "devFound":
             if(devCom) {
                 devSource.Stop();
-                devSource.clip = audioClips["devdead"];
+                currentDevClip = "devdead";
+                devSource.clip = audioClips[currentDevClip];
                 SubtitlesManager(151);
                 devSource.Play();
                 actionsQueue.Add((Time.realtimeSinceStartup + audioLength["devdead"], () => { Ending("ernestoDev"); }));
@@ -651,10 +678,14 @@ public class HearthianParable : ModBehaviour {
             break;
         case "ernestoDev":
             factUnlocked = "VAM-THP_END1_FACT";
+            shipLogManager.GetFact("VAM-THP_END2_1")._save.read = false;
+            shipLogManager.GetFact("VAM-THP_END2_1")._save.newlyRevealed = true;
             gameState |= 1 << 3;
             break;
         case "ernesto":
             factUnlocked = "VAM-THP_END2_FACT";
+            shipLogManager.GetFact("VAM-THP_END1_1")._save.read = false;
+            shipLogManager.GetFact("VAM-THP_END1_1")._save.newlyRevealed = true;
             gameState |= 1 << 2;
             break;
         case "cheater":
@@ -676,39 +707,72 @@ public class HearthianParable : ModBehaviour {
     }
 
     void SubtitlesManager(int inState = 0) {
-        if(difficulty > 1) return;
         if(inState > 0) subtitlesState = inState;
         if(subtitlesState > 0) {
             if(audioSource.isPlaying || (devCom && devSource.isPlaying)) {
+                /*if(Time.realtimeSinceStartup > test) {
+                    ModHelper.Console.WriteLine((dialogues[subtitlesState - 1] == "") + " " + devCom + " " + currentDevClip, MessageType.Success);
+                    test++;
+                }*/
                 if((audioSource.isPlaying ? audioSource.time : devSource.time) > dialoguesTimings[subtitlesState - 1]) {
-                    subtitles._potentialOptions = null;
-                    subtitles.ResetAllText();
-                    subtitles.SetMainFieldDialogueText(dialogues[subtitlesState - 1]);
-                    subtitles._buttonPromptElement.gameObject.SetActive(false);
-                    subtitles._mainFieldTextEffect?.StartTextEffect();
-                    SubtitleShipLogs(subtitlesState);
+                    if(difficulty < 2) UpdateSubtitle(subtitlesState);
                     subtitlesState++;
+                } else if(dialogues[subtitlesState - 1] == "" && devCom && currentDevClip != null) {
+                    switch(currentDevClip) {
+                    case "devcom":
+                        UpdateSubtitle(88);
+                        break;
+                    case "devcomfast":
+                        UpdateSubtitle(144);
+                        break;
+                    case "devlanding":
+                        UpdateSubtitle(95);
+                        break;
+                    case "devhole":
+                        UpdateSubtitle(104);
+                        break;
+                    case "devcore":
+                        UpdateSubtitle(119);
+                        break;
+                    case "devdead":
+                        UpdateSubtitle(151);
+                        break;
+                    default:
+                        break;
+                    }
                 }
-            } else if(dialogues[subtitlesState - 1] == "") {
-                //subtitles.InitializeOptionsUI();
-                subtitles.SetVisible(false);
-                subtitlesState = 0;
-            }
+            } else if((dialogues[subtitlesState - 1] == "") || ((Time.realtimeSinceStartup < silenceTimer + 0.4f) && (Time.realtimeSinceStartup > silenceTimer + 0.2f))) {
+                UpdateSubtitle(0);
+            } else if(Time.realtimeSinceStartup > silenceTimer + 0.4f) silenceTimer = Time.realtimeSinceStartup;
+        }
+    }
+    void UpdateSubtitle(int state) {
+        if(state > 0) {
+            subtitles._potentialOptions = null;
+            subtitles.ResetAllText();
+            subtitles.SetMainFieldDialogueText(dialogues[state - 1]);
+            subtitles._buttonPromptElement.gameObject.SetActive(false);
+            subtitles._mainFieldTextEffect?.StartTextEffect();
+            if(difficulty < 1) SubtitleShipLogs(state);
+            subtitlesState = state;
+        } else {
+            subtitles.SetVisible(false);
+            subtitlesState = 0;
         }
     }
     void SubtitleShipLogs(int state) {
-        if(difficulty > 0) return;
         switch(state) {
         case 12:
         case 50:
             shipLogManager.RevealFact("VAM-THP_END5_1");
             break;
-        case 102:
+        case 101:
             shipLogManager.RevealFact("VAM-THP_END4_1");
             break;
         case 43:
         case 45:
         case 104:
+            shipLogManager.RevealFact("VAM-THP_END4_1");
             shipLogManager.RevealFact("VAM-THP_END4_3");
             break;
         case 110:
@@ -717,9 +781,12 @@ public class HearthianParable : ModBehaviour {
             break;
         case 70:
             shipLogManager.RevealFact("VAM-THP_END3_2");
+            shipLogManager.RevealFact("VAM-THP_END4_2");
+            shipLogManager.RevealFact("VAM-THP_END4_4");
             break;
         case 63:
-            shipLogManager.RevealFact("VAM-THP_END_1");
+            shipLogManager.RevealFact("VAM-THP_END3_2");
+            shipLogManager.RevealFact("VAM-THP_END3_3");
             break;
         case 135:
             shipLogManager.RevealFact("VAM-THP_END1_1");
@@ -740,3 +807,6 @@ public class Gravity_reverse : MonoBehaviour {
         if(col.CompareTag("Player")) modInstance.Gravity_reverse();
     }
 }
+
+// ambiant sound down when audio
+// nomai floors colliders no shared mesh no attached rigidbody???

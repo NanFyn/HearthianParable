@@ -8,12 +8,12 @@
     <Curiosity>VAM-THP_ROOT</Curiosity><IsCuriosity/>
     <RumorFact>
       <ID>VAM-THP_ROOT_RUM</ID>
-      <Text>The dead tree asked me to land on that huge golf ball around the purple star. I didn't know tree could talk and I still don't know if they can be trusted...</Text>
+      <Text>Walking near a dead tree I felt like landing on that huge golf ball around the purple star. I didn't know tree could do telepathy and I still don't know if they can be trusted...</Text>
     </RumorFact>
-    <RumorFact>
+    <!--<RumorFact>
       <ID>VAM-THP_END_1</ID>
 	  <Text>I really hope this is getting somewhere eventually.</Text>
-    </RumorFact>
+    </RumorFact>-->
     <ExploreFact>
       <ID>VAM-THP_ROOT_FACT</ID>
       <Text>Turns out I saved the tree from whatever. Now we're best buddies!</Text>
@@ -23,10 +23,10 @@
       <ID>VAM-THP_END1</ID>
       <Name>Ending 1a</Name>
       <Curiosity>VAM-THP_ROOT</Curiosity>
-      <RumorFact>
+      <!--<RumorFact>
         <ID>VAM-THP_END1_RUM</ID>
         <Text>Placeholder text (change before release!!!)</Text>
-	  </RumorFact>
+	  </RumorFact>-->
 	  <RumorFact>
 		<ID>VAM-THP_END1_1</ID>
 		<Text>The dev finally left their commentary to work on a "secret easter egg below the star"? I wonder what could be there...</Text>
@@ -44,14 +44,10 @@
       <ID>VAM-THP_END2</ID>
       <Name>Ending 1b</Name>
       <Curiosity>VAM-THP_ROOT</Curiosity>
-      <RumorFact>
+      <!--<RumorFact>
         <ID>VAM-THP_END2_RUM</ID>
         <Text>Dolorem ipsum, quia dolor sit, amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt, ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur?</Text>
-		<AltText>
-		  <Text>Dolorem ipsum, quia dolor sit, amet, consectetur...</Text>
-		  <Condition>VAM-THP_END2_1</Condition>
-		</AltText>
-      </RumorFact>
+      </RumorFact>-->
 	  <RumorFact>
 		<ID>VAM-THP_END2_1</ID>
 		<Text>The dev finally left their commentary to work on a "secret easter egg below the star"? I wonder what could be there...</Text>
@@ -69,25 +65,21 @@
       <ID>VAM-THP_END3</ID>
       <Name>Ending 2a</Name>
       <Curiosity>VAM-THP_ROOT</Curiosity>
-      <RumorFact>
+      <!--<RumorFact>
         <ID>VAM-THP_END3_RUM</ID>
         <Text>Example!</Text>
-		<AltText>
-		  <Text>One of the weird voices I heard mentionned checking this mod's settings in the pause menu. I'm bored so I might as well.</Text>
-		  <Condition>VAM-THP_END5_1</Condition>
-		</AltText>
-      </RumorFact>
+      </RumorFact>-->
 	  <RumorFact>
 		<ID>VAM-THP_END3_1</ID>
 		<Text>Ok so the dev didn't build their puzzles yet and they made the V key invert their planet's gravity. Now we need to go deeper.</Text>
 	  </RumorFact>
 	  <RumorFact>
 		<ID>VAM-THP_END3_2</ID>
-		<Text>A little... bacteria(??) complained about the boring commentary, but since I deactivated it to preserve my sanity they went away without even explaining why they were being annoying. I should try to come back with commentary on (or without enabling it in the first place).</Text>
-		<AltText>
-		  <Text>Thank to the annoying little thing I can press the K key to fast forward this mod's boring commentary.</Text>
-		  <Condition>VAM-THP_END_1</Condition>
-		</AltText>
+		<Text>A little... insect? complained about the boring commentary, but since I deactivated it to preserve my sanity they went away without even explaining why they were being annoying. I should try to come back with commentary on (or without enabling it in the first place).</Text>
+	  </RumorFact>
+	  <RumorFact>
+		<ID>VAM-THP_END3_3</ID>
+		<Text>Thank to the annoying little thing I can press the K key to fast forward this mod's boring commentary.</Text>
 	  </RumorFact>
       <ExploreFact>
         <ID>VAM-THP_END3_FACT</ID>
@@ -98,25 +90,25 @@
       <ID>VAM-THP_END4</ID>
       <Name>Ending 2b</Name>
       <Curiosity>VAM-THP_ROOT</Curiosity>
-      <RumorFact>
+      <!--<RumorFact>
         <ID>VAM-THP_END4_RUM</ID>
         <Text>Shiplog_fact_rumor_text.txt</Text>
-      </RumorFact>
+      </RumorFact>-->
 	  <RumorFact>
 		<ID>VAM-THP_END4_1</ID>
 		<Text>It seems there is some kind of "hole" in the white dull planet?</Text>
 	  </RumorFact>
 	  <RumorFact>
 		<ID>VAM-THP_END4_3</ID>
-		<Text>I found Nomai gravity bending floors. They may be the only decent things in there so why not walking on them.</Text>
+		<Text>I found Nomai gravity bending floors covering the planet's hole. They may be the only decent things in there so why not walking on them.</Text>
 	  </RumorFact>
 	  <RumorFact>
 		<ID>VAM-THP_END4_2</ID>
 		<Text>Ok so the dev didn't build their puzzles yet and they made the V key invert their planet's gravity. Now we need to go deeper.</Text>
-		<AltText>
-		  <Text>A little... bacteria(??) complained about the boring commentary, but since I deactivated it to preserve my sanity they went away without even explaining why they were being annoying. I should try to come back with commentary on (or without enabling it in the first place).</Text>
-		  <Condition>VAM-THP_END3_2</Condition>
-		</AltText>
+	  </RumorFact>
+	  <RumorFact>
+		<ID>VAM-THP_END4_4</ID>
+		<Text>A little... insect? complained about the boring commentary, but since I deactivated it to preserve my sanity they went away without even explaining why they were being annoying. I should try to come back with commentary on (or without enabling it in the first place).</Text>
 	  </RumorFact>
       <ExploreFact>
         <ID>VAM-THP_END4_FACT</ID>
@@ -127,10 +119,10 @@
       <ID>VAM-THP_END5</ID>
       <Name>Ending 3</Name>
       <Curiosity>VAM-THP_ROOT</Curiosity>
-      <RumorFact>
+      <!--<RumorFact>
         <ID>VAM-THP_END5_RUM</ID>
         <Text>Could not find rumor text! Please complain to the mod author. Don't let them sleep until you get the rumor text you rightfully deserve!</Text>
-      </RumorFact>
+      </RumorFact>-->
       <RumorFact>
         <ID>VAM-THP_END5_1</ID>
         <Text>One of the weird voices I heard mentionned checking this mod's settings in the pause menu. I'm bored so I might as well.</Text>
