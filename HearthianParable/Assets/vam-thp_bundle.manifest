@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 1402983127
+CRC: 325256259
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 2c08bbd00d9e617f7f1af944b5eb6c31
+    Hash: 48d85d0fdb284ece569bce09d4cebe33
   TypeTreeHash:
     serializedVersion: 2
     Hash: e4b6bc0ab5789c8ff79595300a2e7079
@@ -37,9 +37,6 @@ ClassTypes:
   Script: {instanceID: 0}
 SerializeReferenceClassIdentifiers: []
 Assets:
-- Assets/vam-thp_bundle/Cube_CubeAction.anim
-- Assets/vam-thp_bundle/Cube.asset
-- Assets/vam-thp_bundle/Material.mat
+- Assets/vam-thp_bundle/layer.fbx
 - Assets/vam-thp_bundle/Layer.prefab
-- Assets/vam-thp_bundle/layer_0.prefab
 Dependencies: []

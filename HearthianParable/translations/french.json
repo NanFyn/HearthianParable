@@ -1,0 +1,42 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Outer-Wilds-New-Horizons/new-horizons/main/NewHorizons/Schemas/translation_schema.json",
+    "UIDictionary": {
+        "Out of remorse, Ernesto uploaded the mod to the database.": "Pris de remords, Ernesto soumit le mod pour sa publication.",
+        "It's dangerous to go alone in the Outer Wilds!": "Il est dangereux d'explorer seul'e Outer Wilds !",
+        "Here you are, new ending. Happy?": "Tada, nouvelle fin. Voilà vous êtes content'e ?",
+        "Developper's commentary": "Commentaires de développement",
+        "Difficulty": "Difficulté",
+        "Level of verbosity. Normal: no shiplog hints, Hard: no subtitles either, Insane: not even voices": "Exhaustivité du contenu. Normal: pas de mémo dans le journal de bord, Difficile: pas de sous-titres non plus, Insensé: même pas de voix",
+        "Easy: Shiplogs": "Facile : mémos",
+        "Normal: Subtitles": "Normal: sous-titres",
+        "Hard: Only audio": "Difficile: audio seul",
+        "Insane: Nothing": "Insensé : rien",
+        "Speedrun timer": "Chrono de speedrun",
+        "(restart the game to reset)": "(redémarrer le jeu pour réinitialiser le chrono)",
+        "Mod": "Mod"
+    },
+    "ShipLogDictionary": {
+        "Weird system": "Système stellaire étrange",
+        "Ending 1a": "Fin 1a",
+        "Ending 1b": "Fin 1b",
+        "Ending 2a": "Fin 2a",
+        "Ending 2b": "Fin 2b",
+        "Ending 3": "Fin 3",
+        "Walking near a dead tree I felt like landing on that huge golf ball around the purple star. I didn't know tree could do telepathy and I still don't know if they can be trusted...": "En marchant à côté d'un arbre mort j'ai ressenti le besoin d'atterrir sur la grosse balle de golf autour de l'étoile violette. Je savais pas que les arbres faisaient de la télépathie et je sais toujours pas si ils sont dignes de confiance...",
+        "Turns out I saved the tree from whatever. Now we're best buddies!": "Il semblerait que j'aie sauvé l'arbre de je sais pas trop quoi. Maintenant c'est mon meilleur pote !",
+        "The dev finally left their commentary to work on a \"secret easter egg below the star\"? I wonder what could be there...": "Le/la dev a enfin arrêté son commentaire pour aller bosser sur un \"easter egg super secret sous l'étoile\" ? Je me demande ce qu'il pourrait y avoir là bas...'",
+        "I found the dev on a tiny hidden planet, they were eaten alive by an anglerfish! The voices seemed as surprised as I was. I wonder if the dev commented their own demise...": "J'ai trouvé le/la dev sur une minuscule planète cachée, dévoré'e vivant'e par un cœlacanthe! Les voix m'ont semblées aussi surprises que moi. Je me demande si le/la dev a commenté même ça...",
+        "I found the dev on a tiny hidden planet, they were eaten alive by an anglerfish! I heard them as they met their fate but I wonder if I would have with commentary off...": "J'ai trouvé le/la dev sur une minuscule planète cachée, dévoré'e vivant'e par un cœlacanthe! Je l'ai entendu'e vivre cette épreuve. Je me demande si ça aurait été le cas sans les commentaires de développement...",
+        "Seems like the dev wanted to chill inside the game and got assaulted by a scary fish. Ok fine whatever.": "Il semblerait que le/la dev, en voulant se reposer tranquillou à l'intérieur du jeu lui-même, se soit fait'e agresser par un poisson enragé. Ouai ok bon, pourquoi pas.",
+        "The anglerfish I met seems quite a known figure around here. These people are crazy!": "Le cœlacanthe que j'ai rencontré semble être une célébrité. Ces gens sont complètement dingues !",
+        "Ok so the dev didn't build their puzzles yet and they made the V key invert their planet's gravity. Now we need to go deeper.": "Ok alors visiblement le/la dev n'a pas encore créé ses puzzles et en attendant a associé la touche V du clavier à l'inversion de la gravité de sa planète. Il est temps d'aller plus en profondeur.",
+        "A little... insect? complained about the boring commentary, but since I deactivated it to preserve my sanity they went away without even explaining why they were being annoying. I should try to come back with commentary on (or without enabling it in the first place).": "Une sorte de petit... insecte? s'est plaint des commentaires ennuyeux, mais comme je les avais désactivés pour épargner ma santé mentale il est reparti avant même de m'expliquer pourquoi il était venu m'ennuyer. Je devrais essayer de revenir avec les commentaires (ou sans jamais les activer).",
+        "Thank to the annoying little thing I can press the K key to fast forward this mod's boring commentary.": "Grâce à la petite créature énervante je peux appuyer sur K pour faire défiler ces ennuyeux commentaires de développement plus vite.",
+        "I seem to have offended the dev by skipping their boring commentary. Good thing I don't care!": "On dirait que j'ai offensé le/la dev en passant ses commentaires soporifiques. Le truc c'est que je m'en fiche complètement !",
+        "It seems there is some kind of \"hole\" in the white dull planet?": "Apparemment il y aurait une sorte de \"trou\" dans la planète blanche et déserte ?",
+        "I found Nomai gravity bending floors covering the planet's hole. They may be the only decent things in there so why not walking on them.": "J'ai trouvé des surfaces gravitationnelles Nomai autour du trou dans la planète. Ce sont probablement les seules choses dignes d'intérêt dans le coin donc pourquoi pas les essayer.",
+        "How is that cheating! That's just how this game works!": "Comment ça je triche ! C'est comme ça que fonctionne tout le jeu !",
+        "One of the weird voices I heard mentionned checking this mod's settings in the pause menu. I'm bored so I might as well.": "Une des voix bizarres que j'ai entendues a parlé d'aller voir les paramètres de ce mod, dans le menu de pause. Je m'ennuie à fond alors autant faire ça.",
+        "I deactivated the whole mod from the settings. Unfortunately it came back!": "J'ai désactivé le mod entier dans les paramètres. Malheureusement il est revenu !"
+    }
+}
