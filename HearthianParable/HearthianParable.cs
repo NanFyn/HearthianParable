@@ -32,6 +32,7 @@ public class HearthianParable : ModBehaviour {
     readonly Dictionary<string, AudioClip> audioClips = [];
     readonly Dictionary<string, float> audioLength = [];
     readonly List<(float, Action)> actionsQueue = [];
+    bool ambiantSoundsOn = true;
     bool dataLoaded = false;
     int gameState = 0, difficulty = 0;
     bool sawTree, landed, disappointed, holeFound, holeSaw, nomaiFound, upsideDown, sawSettings, heardDev, devCom, devSpedUp, devFound, reachedCore, speedRunTimer;
@@ -56,7 +57,7 @@ public class HearthianParable : ModBehaviour {
 
         new Harmony("Vambok.HearthianParable").PatchAll(Assembly.GetExecutingAssembly());
         ModHelper.Events.Unity.RunWhen(PlayerData.IsLoaded, LoadData);
-        //LoadManager.OnStartSceneLoad += LoadData;
+        LoadManager.OnStartSceneLoad += GetDialoguesLocalization;
         StandaloneProfileManager.SharedInstance.OnProfileReadDone += LoadData;
         OnCompleteSceneLoad(OWScene.TitleScreen, OWScene.TitleScreen); // We start on title screen
         LoadManager.OnCompleteSceneLoad += OnCompleteSceneLoad;
@@ -114,7 +115,7 @@ public class HearthianParable : ModBehaviour {
                     }
                 }
             }
-            GetDialoguesLocalization();
+            //GetDialoguesLocalization();
             dataLoaded = true;
             //Cleanup: How to?? that:
             //PlayerData._currentGameSave.shipLogFactSaves.Remove("VAM-THP_END1_RUM");
@@ -135,7 +136,8 @@ public class HearthianParable : ModBehaviour {
         PlayerData._currentGameSave.shipLogFactSaves["HearthlingParable_gameSettings"] = new ShipLogFactSave((difficulty * 4 + (speedRunTimer ? 2 : 0) + (devCom ? 1 : 0)).ToString());
         PlayerData.SaveCurrentGame();
     }
-    void GetDialoguesLocalization() {
+    void GetDialoguesLocalization(OWScene previousScene, OWScene newScene) {
+        if(newScene != OWScene.SolarSystem) return;
         language = PlayerData.GetSavedLanguage() switch {
             TextTranslation.Language.SPANISH_LA => "spanish_la",
             TextTranslation.Language.GERMAN => "german",
@@ -157,7 +159,7 @@ public class HearthianParable : ModBehaviour {
             GetSettings(config);
             SaveState();
             speedrunPrompt?.SetVisibility(speedRunTimer);
-            GetDialoguesLocalization();
+            //GetDialoguesLocalization();
             if(LoadManager.GetCurrentScene() == OWScene.SolarSystem) {
                 if(!config.GetSettingsValue<bool>("Mod")) {
                     closeOptMenu?.Submit();
@@ -284,103 +286,131 @@ public class HearthianParable : ModBehaviour {
         }, 91);
     }
 
-    void Update() {
-        if(layers[0] != null) {
-            float speedrunTot = Time.realtimeSinceStartup - speedrunTime;
-            float speedrunIGTot = Time.realtimeSinceStartup - speedrunIGTime;
-            int speedrunMins = (int)(speedrunTot / 60);
-            int speedrunIGMins = (int)(speedrunIGTot / 60);
-            speedrunPrompt.SetText(localization[language]["speedrunTimer"][0] + " " + speedrunMins + localization[language]["speedrunTimer"][2] + (speedrunTot - speedrunMins * 60).ToString("f") + localization[language]["speedrunTimer"][3] + "\n" + localization[language]["speedrunTimer"][1] + " " + speedrunIGMins + localization[language]["speedrunTimer"][2] + (speedrunIGTot - speedrunIGMins * 60).ToString("f") + localization[language]["speedrunTimer"][3]);
-            if(!sawTree && (player.transform.position - daTree.transform.position).magnitude < 10) {
-                sawTree = true;
-                shipLogManager.RevealFact("VAM-THP_ROOT_RUM");
-                //shipLogManager.RevealFact("VAM-THP_END1_RUM");
-                //shipLogManager.RevealFact("VAM-THP_END2_RUM");
-                //shipLogManager.RevealFact("VAM-THP_END3_RUM");
-                //shipLogManager.RevealFact("VAM-THP_END4_RUM");
-                //shipLogManager.RevealFact("VAM-THP_END5_RUM");
+    void SpeedrunTimer() {
+        float speedrunTot = Time.realtimeSinceStartup - speedrunTime;
+        float speedrunIGTot = Time.realtimeSinceStartup - speedrunIGTime;
+        int speedrunMins = (int)(speedrunTot / 60);
+        int speedrunIGMins = (int)(speedrunIGTot / 60);
+        speedrunPrompt.SetText(localization[language]["speedrunTimer"][0] + " " + speedrunMins + localization[language]["speedrunTimer"][2] + (speedrunTot - speedrunMins * 60).ToString("f") + localization[language]["speedrunTimer"][3] + "\n" + localization[language]["speedrunTimer"][1] + " " + speedrunIGMins + localization[language]["speedrunTimer"][2] + (speedrunIGTot - speedrunIGMins * 60).ToString("f") + localization[language]["speedrunTimer"][3]);
+    }
+    void GlobalTriggers() {
+        // Tree start:
+        if(!sawTree && (player.transform.position - daTree.transform.position).magnitude < 10) {
+            sawTree = true;
+            shipLogManager.RevealFact("VAM-THP_ROOT_RUM");
+        }
+        //
+        float planet_dist = (player.transform.position - layers[0].transform.position).magnitude;
+        // Anti-ship shield:
+        if(planet_dist < 400 && PlayerState.IsInsideShip()) {
+            Transform ship = Locator.GetShipTransform();
+            ship.position += (ship.position - layers[0].transform.position).normalized * (400 - planet_dist);
+        }
+        // Layer's rotations:
+        if(planet_dist < 370 && planet_dist > 190) {
+            if(planet_dist > 310) {
+                layers[1].transform.localEulerAngles += (Vector3.up - Vector3.forward) * 5 * Time.deltaTime;
+                layers[3].transform.localEulerAngles -= Vector3.forward * 5 * Time.deltaTime;
+            } else {
+                layers[2].transform.localEulerAngles += (Vector3.forward - Vector3.up) * 5 * Time.deltaTime;
+                layers[3].transform.localEulerAngles -= Vector3.up * 5 * Time.deltaTime;
             }
-            float planet_dist = (player.transform.position - layers[0].transform.position).magnitude;
-            if(planet_dist < 400 && PlayerState.IsInsideShip()) {
-                Transform ship = Locator.GetShipTransform();
-                ship.position += (ship.position - layers[0].transform.position).normalized * (400 - planet_dist);
-            }
-            if(planet_dist < 370 && planet_dist > 190) {
-                if(planet_dist > 310) {
-                    layers[1].transform.localEulerAngles += (Vector3.up - Vector3.forward) * 5 * Time.deltaTime;
-                    layers[3].transform.localEulerAngles -= Vector3.forward * 5 * Time.deltaTime;
+        } else {
+            layers[1].transform.localEulerAngles += Vector3.up * 5 * Time.deltaTime;
+            layers[2].transform.localEulerAngles += Vector3.forward * 5 * Time.deltaTime;
+        }
+        // V key gravity inversion:
+        if(Keyboard.current.vKey.wasPressedThisFrame) {
+            Gravity_reverse(0);
+        }
+        // Dev com K speedup:
+        if(devCom) {
+            if(!heardDev) heardDev = true;
+            if(devSpedUp) {
+                if(devSource.isPlaying) {
+                    if(Keyboard.current.kKey.wasReleasedThisFrame && devSource.time < 80) {
+                        devSource.time = 80;
+                    }
                 } else {
-                    layers[2].transform.localEulerAngles += (Vector3.forward - Vector3.up) * 5 * Time.deltaTime;
-                    layers[3].transform.localEulerAngles -= Vector3.up * 5 * Time.deltaTime;
+                    devCom = false;
+                    ModHelper.Config.SetSettingsValue("DevCom", devCom);
+                    Ending("kickedOut");
                 }
             } else {
-                layers[1].transform.localEulerAngles += Vector3.up * 5 * Time.deltaTime;
-                layers[2].transform.localEulerAngles += Vector3.forward * 5 * Time.deltaTime;
+                if(!devFound && Keyboard.current.kKey.wasPressedThisFrame && devSource.isPlaying) {
+                    float currentTime = (devSource.time + (landed ? 33.44f : 0) + (holeFound ? 38.33f : 0) + (reachedCore ? 95.28f : 0)) / 4;
+                    if(currentTime < 78) {
+                        devSpedUp = true;
+                        devSource.Stop();
+                        if(difficulty > 2) return;
+                        currentDevClip = "devcomfast";
+                        devSource.clip = audioClips[currentDevClip];
+                        SubtitlesManager(144);
+                        devSource.Play();
+                        devSource.time = currentTime;
+                    }
+                }
             }
-            if(Keyboard.current.vKey.wasPressedThisFrame) {
-                Gravity_reverse(0);
+        }
+        // Events:
+        if(!landed) {// First landing:
+            if(planet_dist < 410) {
+                landed = true;
+                Narration("landing");
             }
-            if(devSource != null) devSource.volume = (devCom && !audioSource.isPlaying ? 1 : 0);
-            if(devCom) {
-                if(!heardDev) heardDev = true;
-                if(devSpedUp) {
-                    if(devSource.isPlaying) {
-                        if(Keyboard.current.kKey.wasReleasedThisFrame && devSource.time < 80) {
-                            devSource.time = 80;
-                        }
-                    } else {
-                        devCom = false;
-                        ModHelper.Config.SetSettingsValue("DevCom", devCom);
-                        Ending("kickedOut");
+        } else if(!holeFound) {// Hole found:
+            if((triggers[1].position + Vector3.right * 400 - player.transform.position).magnitude < 100) {
+                holeFound = true;
+                Narration("hole");
+            }
+        } else if(!nomaiFound) {// Floors found:
+            if((triggers[1].position + Vector3.right * 400 - player.transform.position).magnitude < 35) {
+                nomaiFound = true;
+                Narration("nomaiFloors");
+            }
+        } else if(!upsideDown) {// Under surface:
+            if(planet_dist < 400 && (triggers[1].position + Vector3.right * 400 - player.transform.position).magnitude > 35 && grav._cutoffAcceleration < 0) {
+                upsideDown = true;
+                Narration("innerSide");
+            }
+        }
+        // Dead dev found:
+        if(!devFound && (triggers[2].position - player.transform.position).magnitude < 5) {
+            devFound = true;
+            Narration("devFound");
+        }
+        // Reached planet's core:
+        if(!reachedCore && planet_dist < 110) {
+            reachedCore = true;
+            Narration("planetCore");
+        }
+    }
+    void GlobalAudioManagers() {
+        if(devSource != null) {
+            devSource.volume = (devCom && !audioSource.isPlaying ? 1 : 0);
+            if(!OWTime.IsPaused(OWTime.PauseType.Menu)) {
+                if(audioSource.isPlaying || (devCom && devSource.isPlaying)) {
+                    if(ambiantSoundsOn) {
+                        Locator.GetAudioMixer()._inGameVolume.FadeTo(0.5f, 1f);
+                        ambiantSoundsOn = false;
                     }
                 } else {
-                    if(!devFound && Keyboard.current.kKey.wasPressedThisFrame && devSource.isPlaying) {
-                        float currentTime = (devSource.time + (landed ? 33.44f : 0) + (holeFound ? 38.33f : 0) + (reachedCore ? 95.28f : 0)) / 4;
-                        if(currentTime < 78) {
-                            devSpedUp = true;
-                            devSource.Stop();
-                            if(difficulty > 2) return;
-                            currentDevClip = "devcomfast";
-                            devSource.clip = audioClips[currentDevClip];
-                            SubtitlesManager(144);
-                            devSource.Play();
-                            devSource.time = currentTime;
-                        }
+                    if(!ambiantSoundsOn) {
+                        Locator.GetAudioMixer()._inGameVolume.FadeTo(1f, 1f);
+                        ambiantSoundsOn = true;
                     }
                 }
             }
-            if(!landed) {
-                if(planet_dist < 410) {
-                    landed = true;
-                    Narration("landing");
-                }
-            } else if(!holeFound) {
-                if((triggers[1].position + Vector3.right * 400 - player.transform.position).magnitude < 100) {
-                    holeFound = true;
-                    Narration("hole");
-                }
-            } else if(!nomaiFound) {
-                if((triggers[1].position + Vector3.right * 400 - player.transform.position).magnitude < 35) {
-                    nomaiFound = true;
-                    Narration("nomaiFloors");
-                }
-            } else if(!upsideDown) {
-                if(planet_dist < 400 && (triggers[1].position + Vector3.right * 400 - player.transform.position).magnitude > 35 && grav._cutoffAcceleration < 0) {
-                    upsideDown = true;
-                    Narration("innerSide");
-                }
-            }
-            if(!devFound && (triggers[2].position - player.transform.position).magnitude < 5) {
-                devFound = true;
-                Narration("devFound");
-            }
-            if(!reachedCore && planet_dist < 110) {
-                reachedCore = true;
-                Narration("planetCore");
-            }
+        }
+    }
+    void Update() {
+        if(layers[0] != null) {
+            SpeedrunTimer();
+            GlobalTriggers();
+            GlobalAudioManagers();
+            SubtitlesManager();
             if(actionsQueue.Count > 0 && Time.realtimeSinceStartup > actionsQueue[0].Item1)
                 actionsQueue[0].Item2();
-            SubtitlesManager();
         }
     }
 
@@ -656,6 +686,7 @@ public class HearthianParable : ModBehaviour {
         if(state > 0) {
             subtitles._potentialOptions = null;
             subtitles.ResetAllText();
+            subtitles.SetNameFieldVisible(false);
             subtitles.SetMainFieldDialogueText(localization[language]["dialogues"][state - 1]);
             subtitles._buttonPromptElement.gameObject.SetActive(false);
             subtitles._mainFieldTextEffect?.StartTextEffect();

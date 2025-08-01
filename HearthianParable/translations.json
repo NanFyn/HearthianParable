@@ -320,7 +320,7 @@
         ]
     },
     "chinese_simple": {
-        "speedrunTimer": [ "Real time:", "In game time:", "mn", "s" ],
+        "speedrunTimer": [ "实际时长:", "游戏内时长:", "分", "秒" ],
         "dialogues": []
     }
 }
